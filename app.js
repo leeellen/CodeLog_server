@@ -8,6 +8,8 @@ const cookieParser = require('cookie-parser');
 
 const morgan = require('morgan');
 
+const router = require('./routes');
+
 // const { urls } = require("./models");
 
 const app = express();
@@ -35,9 +37,7 @@ app.use(
 
 app.use(morgan('dev'));
 
-app.get('/', (req, res) => {
-  res.status(200).send('Success');
-});
+app.use('/', router);
 
 app.set('port', port);
 app.listen(app.get('port'), () => {
