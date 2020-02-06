@@ -1,29 +1,19 @@
-const { users } = require('../../models');
+const { users } = require('../../services');
 
 module.exports = {
-  post: (req, res) => {
+  post: async (req, res) => {
     const { body } = req;
+
     users
-      .findOrCreate({
-        where: {
-          username: body.username,
-        },
-        defaults: {
-          password: body.password,
-          companyid: body.companyid,
-          rank: body.rank,
-          completion: body.completion,
-        },
-      })
-      .then(([result, created]) => {
-        if (!created) {
-          return res.status(409).send('User already exists');
+      .create(body.username, body.password, body.companyid, body.rank, body.completion)
+      .then((result) => {
+        if (result.success && result.message === 'created') {
+          res.status(200).send('User successfully created!');
+        } else if (result.message === 'duplicated') {
+          res.status(409).send('User already exists');
+        } else {
+          res.sendStatus(500);
         }
-        return res.status(200).send('User successfully created');
-      })
-      .catch((error) => {
-        console.log(error);
-        res.sendStatus(500); // Server error
       });
   },
 };
