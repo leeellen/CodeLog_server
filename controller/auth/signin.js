@@ -1,8 +1,19 @@
-const { users } = require('../../models');
-// const { tokenhelper } = require('../../utils/token');
+const asyncHandler = require('express-async-handler');
+
+const { users } = require('../../services');
+const th = require('../../utils/token');
 
 module.exports = {
-  post: (req, res) => {
-    const { body } = req;
-  },
+  post: asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+
+    let userData = await users.find(email, password);
+    console.log(userData);
+
+    let token = await th.tokenGenerator({ id: userData.payload.id });
+    console.log(token);
+
+    res.cookie('token', token);
+    res.status(200).send('Token generated');
+  }),
 };

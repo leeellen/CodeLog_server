@@ -17,7 +17,7 @@ const port = 3001;
 
 app.use(
   session({
-    secret: '@halibolisky',
+    secret: '@warrmansion',
     resave: false,
     saveUninitialized: true,
     // ,store: new FileStore()
