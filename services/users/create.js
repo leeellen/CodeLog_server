@@ -1,16 +1,18 @@
 const { users } = require('../../models');
 
-module.exports = (username, password, companyid, rank, completion) => {
+module.exports = (email, username, password, companyid, rank, completion, website) => {
   return users
     .findOrCreate({
       where: {
-        username,
+        email,
       },
       defaults: {
+        username,
         password,
         companyid,
         rank,
         completion,
+        website,
       },
     })
     .then(([result, created]) => {

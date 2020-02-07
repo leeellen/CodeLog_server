@@ -5,7 +5,15 @@ module.exports = {
     const { body } = req;
 
     users
-      .create(body.username, body.password, body.companyid, body.rank, body.completion)
+      .create(
+        body.email,
+        body.username,
+        body.password,
+        body.companyid,
+        body.rank,
+        body.completion,
+        body.website,
+      )
       .then((result) => {
         if (result.success && result.message === 'created') {
           res.status(200).send('User successfully created!');
