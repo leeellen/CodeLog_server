@@ -70,4 +70,18 @@ module.exports = {
         };
       });
   },
+  update: function(email, password) {
+    this.find(email, password).then((result) => {
+      if (result.success === true) {
+        if (result.message === 'exists') {
+          users.update({
+            where: {
+              email,
+              password,
+            },
+          });
+        }
+      }
+    });
+  },
 };
