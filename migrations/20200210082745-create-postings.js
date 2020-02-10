@@ -11,7 +11,6 @@ module.exports = {
       content: {
         type: Sequelize.TEXT,
         allowNull: false,
-        defaultValue: '',
       },
       likes: {
         type: Sequelize.INTEGER,
