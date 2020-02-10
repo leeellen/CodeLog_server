@@ -15,10 +15,8 @@ module.exports = {
       console.log(token);
       res.cookie('token', token);
       res.status(200).send('Token generated');
-    } else if (userData.message === 'not exists') {
-      res.status(400).send(`User with ${email} and ${password} doesn't exist`);
     } else {
-      res.sendStatus(500);
+      res.status(400).send(`User with ${email} doesn't exist`);
     }
   }),
 };
