@@ -8,16 +8,22 @@ module.exports = {
         email: `user${i}@gmail.com`,
         username: 'user' + i,
         password: i,
-        companyid: 0,
+        companyid: Math.floor(Math.random() * 14) + 1,
         rank: '',
         completion: 'im16',
         website: '',
       });
     }
-    return queryInterface.bulkInsert('Users', demoArr);
+    return queryInterface.bulkInsert('users', demoArr);
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('Users', null, {});
+    /*
+      Add reverting commands here.
+      Return a promise to correctly handle asynchronicity.
+
+      Example:
+      return queryInterface.bulkDelete('People', null, {});
+    */
   },
 };
