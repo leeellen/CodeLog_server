@@ -27,6 +27,7 @@ module.exports = {
           model: 'companies',
           key: 'id',
         },
+        defaultValue: 1,
       },
       rank: {
         type: Sequelize.STRING,

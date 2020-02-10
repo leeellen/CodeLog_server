@@ -3,6 +3,14 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     let demoArr = [];
+    demoArr.push({
+      code: '',
+      name: 'independent',
+      ispartner: 0,
+      mutual: '',
+      eid: '',
+      homepage: '',
+    });
     for (let i = 0; i < 15; i++) {
       if (Math.floor(Math.random() * 2) === 0) {
         demoArr.push({
