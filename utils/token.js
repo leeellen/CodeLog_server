@@ -12,25 +12,22 @@ const tokenGenerator = (data) => {
   });
 };
 
-const isValid = (token, callback) => {
-  jwt.verify(token, 'secret', (err, decode) => {
-    if (err) {
-      callback({ isValid: false });
-    } else {
-      const exp = new Date(decode.exp * 1000);
-      const now = Date.now();
-      // const day = 1000 * 60 * 60 * 24;
-      if (exp < now) {
-        callback({ isValid: false });
-        // } else if (exp < now + 5 * day) {
-        //   console.log("=========Token Helper: Generate New Token")
-        //   const newToken = module.exports.generateToken(decode.user.id);
-        //   callback({ isValid: true, token: newToken, userInfo: decode });
+const isValid = (token) => {
+  return new Promise((res, rej) => {
+    jwt.verify(token, 'secret', (err, decode) => {
+      if (err) {
+        res({ isValid: false });
       } else {
-        // console.log("=========Token Helper: Token is valid")
-        callback({ isValid: true, token: token, userInfo: decode });
+        const exp = new Date(decode.exp * 1000);
+        const now = Date.now();
+        console.log('exp', exp, 'now', now);
+        if (exp < now) {
+          res({ isValid: false });
+        } else {
+          res({ isValid: true, token: token, userData: decode });
+        }
       }
-    }
+    });
   });
 };
 
