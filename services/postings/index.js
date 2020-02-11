@@ -3,7 +3,6 @@ const Sequelize = require('sequelize');
 
 module.exports = {
   create: function(userid, title, content, likes, theme) {
-    console.log(email);
     return postings
       .create({
         title,
@@ -13,17 +12,18 @@ module.exports = {
         userid,
       })
       .then((result) => {
+        console.log(result.dataValues);
         return {
           success: true,
-          payload: null,
-          message: result.dataValues.id,
+          payload: result.dataValues,
+          message: 'created',
         };
       })
       .catch((error) => {
         return {
           success: false,
-          payload: null,
-          message: error.toString(),
+          payload: error.toString(),
+          message: 'not created',
         };
       });
   },
@@ -51,7 +51,7 @@ module.exports = {
       });
   },
   update: function(postid, title, content) {
-    postings
+    return postings
       .update(
         {
           title,
@@ -80,7 +80,7 @@ module.exports = {
       });
   },
   increaseLike: function(postid) {
-    postings
+    return postings
       .update(
         {
           likes: Sequelize.literal('likes + 1'),
@@ -111,7 +111,7 @@ module.exports = {
     tagids = tagids.map((el) => {
       return { tagid: el, postid };
     });
-    postings_tags
+    return postings_tags
       .bulkCreate(tagids)
       .then(() => {
         return {
@@ -121,6 +121,7 @@ module.exports = {
         };
       })
       .catch((error) => {
+        console.log(error);
         return {
           success: false,
           payload: error.toString(),
