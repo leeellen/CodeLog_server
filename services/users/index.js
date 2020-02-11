@@ -64,7 +64,7 @@ module.exports = {
       });
   },
   updateByEmail: function(email, username, password, companyid, rank, completion, website) {
-    users
+    return users
       .update(
         {
           username,

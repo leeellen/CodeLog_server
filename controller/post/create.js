@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 
-const { isValid } = require('../../utils');
+const { isValid } = require('../../utils/token');
 const { postings, tags } = require('../../services');
 
 module.exports = {
