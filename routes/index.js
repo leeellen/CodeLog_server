@@ -15,4 +15,6 @@ router.post('/signout', authController.signout.post);
 
 router.post('/post', postController.create.post);
 
+router.get('/mypage', postController.mypage.get);
+
 module.exports = router;
