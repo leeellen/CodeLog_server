@@ -50,6 +50,120 @@ module.exports = {
         };
       });
   },
+  findAll: function(userid) {
+    return postings
+      .findAll({
+        where: {
+          userid,
+        },
+      })
+      .then((result) => {
+        return {
+          success: true,
+          payload: result.map((el) => el.dataValues),
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not exists',
+        };
+      });
+  },
+  findPlain: function(userid) {
+    return postings
+      .findAll({
+        where: {
+          userid,
+          theme: 'plain',
+        },
+      })
+      .then((result) => {
+        return {
+          success: true,
+          payload: result.map((el) => el.dataValues),
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not exists',
+        };
+      });
+  },
+  findTIL: function(userid) {
+    return postings
+      .findAll({
+        where: {
+          userid,
+          theme: 'til',
+        },
+      })
+      .then((result) => {
+        return {
+          success: true,
+          payload: result.map((el) => el.dataValues),
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not exists',
+        };
+      });
+  },
+  findTech: function(userid) {
+    return postings
+      .findAll({
+        where: {
+          userid,
+          theme: 'tech',
+        },
+      })
+      .then((result) => {
+        return {
+          success: true,
+          payload: result.map((el) => el.dataValues),
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not exists',
+        };
+      });
+  },
+  findDev: function(userid) {
+    return postings
+      .findAll({
+        where: {
+          userid,
+          theme: 'dev',
+        },
+      })
+      .then((result) => {
+        return {
+          success: true,
+          payload: result.map((el) => el.dataValues),
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not exists',
+        };
+      });
+  },
   update: function(postid, title, content) {
     return postings
       .update(
