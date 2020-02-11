@@ -48,17 +48,51 @@ module.exports = {
         },
       })
       .then((result) => {
-        if (result.dataValues) {
+        console.log(result.dataValues);
+        return {
+          success: true,
+          payload: result.dataValues,
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not exists',
+        };
+      });
+  },
+  updateByEmail: function(email, username, password, companyid, rank, completion, website) {
+    users
+      .update(
+        {
+          username,
+          password,
+          companyid,
+          rank,
+          completion,
+          website,
+        },
+        {
+          where: {
+            email,
+          },
+        },
+      )
+      .then((result) => {
+        console.log(result);
+        if (result) {
           return {
             success: true,
             payload: result.dataValues,
-            message: 'exists',
+            message: 'updated',
           };
         } else {
           return {
             success: false,
-            payload: null,
-            message: 'not exists',
+            payload: result.dataValues,
+            message: 'not updated',
           };
         }
       })
@@ -69,19 +103,5 @@ module.exports = {
           message: error.toString(),
         };
       });
-  },
-  update: function(email, password) {
-    this.find(email, password).then((result) => {
-      if (result.success === true) {
-        if (result.message === 'exists') {
-          users.update({
-            where: {
-              email,
-              password,
-            },
-          });
-        }
-      }
-    });
   },
 };
