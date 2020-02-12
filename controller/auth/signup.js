@@ -15,13 +15,15 @@ module.exports = {
       completion,
       website,
     );
-    if (result.success && result.message === 'created') {
-      res.status(200).send('User successfully created!');
-    } else if (result.message === 'duplicated') {
-      res.status(409).send('User already exists');
-    } else {
-      console.log(result.message);
-      res.sendStatus(500);
+    if (!result.success) {
+      if (result.message === 'duplicated') {
+        res.status(409).send('User already exists');
+      } else {
+        console.log(result.message);
+        res.sendStatus(500);
+      }
     }
+
+    res.status(200).send('User successfully created!');
   }),
 };

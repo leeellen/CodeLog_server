@@ -16,13 +16,12 @@ module.exports = {
 
     let posts = {};
     for (let el of ['Plain', 'TIL', 'Tech', 'Dev']) {
-      const findresult = await postings['find' + el](userid);
-      if (!findresult.success) {
+      const findResult = await postings['find' + el](userid);
+      if (!findResult.success) {
         res.status(404).send(`There's an error while finding your ${el} posts`);
         return;
       }
-      console.log(findresult.payload);
-      posts[el.toLowerCase() + '_posts'] = findresult.payload;
+      posts[el.toLowerCase() + '_posts'] = findResult.payload;
     }
 
     res.status(200).send(posts);

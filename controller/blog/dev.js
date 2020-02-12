@@ -15,13 +15,12 @@ module.exports = {
     const userid = decodeData.userData.id;
 
     let posts = {};
-    const findresult = await postings.findDev(userid);
-    if (!findresult.success) {
+    const findResult = await postings.findDev(userid);
+    if (!findResult.success) {
       res.status(404).send(`There's an error while finding your posts`);
       return;
     }
-    console.log(findresult.payload);
-    posts['posts'] = findresult.payload;
+    posts['posts'] = findResult.payload;
 
     res.status(200).send(posts);
   }),
