@@ -3,7 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     let demoArr = [];
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 100; i++) {
       demoArr.push({
         title: 'apple pie',
         content:

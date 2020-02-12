@@ -13,7 +13,7 @@ module.exports = {
     }
     let postingInfo = findresult.payload;
 
-    let tagfindresult = await tags.findByPostId(id);
+    let tagfindresult = await tags.findNamesByPostId(id);
     if (!tagfindresult.success) {
       res.status(404).send("i found your postings, but i can't find posting tags");
       return;

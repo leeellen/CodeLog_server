@@ -2,12 +2,16 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    let demoArr = [];
-    for (let i = 0; i < 15; i++) {
-      demoArr.push({
-        name: `tag${i}tag${i}`,
-      });
-    }
+    let demoArr = [
+      { name: 'React' },
+      { name: 'Redux' },
+      { name: 'Typescript' },
+      { name: 'Node.js' },
+      { name: 'Sequelize' },
+      { name: 'Serverless' },
+      { name: 'Hooks' },
+      { name: 'Javascript' },
+    ];
     return queryInterface.bulkInsert('tags', demoArr);
   },
 
