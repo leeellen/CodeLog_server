@@ -4,7 +4,8 @@ const { isValid } = require('../../utils/token');
 const { postings, tags } = require('../../services');
 
 module.exports = {
-  get: asyncHandler(async (req, res) => {
+  post: asyncHandler(async (req, res) => {
+    const { theme, title, content, selected_tags } = req.body;
     const { token } = req.cookies;
 
     let decodeData = await isValid(token);
@@ -14,17 +15,49 @@ module.exports = {
     }
     const userid = decodeData.userData.id;
 
-    let posts = {};
-    for (let el of ['Plain', 'TIL', 'Tech', 'Dev']) {
-      const findresult = await postings['find' + el](userid);
+    let postresult = await postings.create(userid, title, content, 0, theme);
+    if (!postresult.success) {
+      res.status(404).send("i can't upload your postings");
+      return;
+    }
+    const postid = postresult.payload.id;
+
+    let tagids = [];
+    for (let i = 0; i < selected_tags.length; i++) {
+      let findresult = await tags.find(selected_tags[i]);
       if (!findresult.success) {
-        res.status(404).send(`There's an error while finding your ${el} posts`);
+        res
+          .status(404)
+          .send("i saved your postings, but i can't find your tag " + selected_tags[i]);
         return;
       }
-      console.log(findresult.payload);
-      posts[el.toLowerCase() + '_posts'] = findresult.payload;
+      tagids.push(findresult.payload.id);
     }
 
-    res.status(200).send(posts);
+    let addresult = await postings.addTags(postid, tagids);
+    if (!addresult.success) {
+      res.status(404).send("i saved your postings, but i can't put your tags in");
+      return;
+    }
+
+    res.status(201).send('Posting successfully created!');
+  }),
+  get: asyncHandler(async (req, res) => {
+    const { id } = req.body;
+
+    let findresult = await postings.find(id);
+    if (!findresult.success) {
+      res.status(404).send("i can't find your postings");
+      return;
+    }
+    let postingInfo = findresult.payload;
+
+    let tagfindresult = await tags.findByPostId(id);
+    if (!tagfindresult.success) {
+      res.status(404).send("i found your postings, but i can't find posting tags");
+      return;
+    }
+    postingInfo['tags'] = tagfindresult.payload;
+    res.status(200).send(postingInfo);
   }),
 };

@@ -1,4 +1,4 @@
 module.exports = {
-  create: require('./create'),
-  mypage: require('./board'),
+  board: require('./board'),
+  boardbyid: require('./boardbyid'),
 };
