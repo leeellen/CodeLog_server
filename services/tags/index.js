@@ -1,6 +1,25 @@
 const { tags, postings_tags } = require('../../models');
 
 module.exports = {
+  getAllTags: function() {
+    return tags
+      .findAll()
+      .then((result) => {
+        return {
+          success: true,
+          payload: result.map((el) => el.dataValues.name),
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        console.log(error);
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not exists',
+        };
+      });
+  },
   findByName: function(tagname) {
     return tags
       .findOne({
@@ -24,7 +43,29 @@ module.exports = {
         };
       });
   },
-  findByPostId: function(postid) {
+  findCountByPostId: function(postid) {
+    return postings_tags
+      .findAll({
+        where: {
+          postid,
+        },
+      })
+      .then((result) => {
+        return {
+          success: true,
+          payload: result.map((el) => el.dataValues.tagid),
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not exists',
+        };
+      });
+  },
+  findNamesByPostId: function(postid) {
     return postings_tags
       .findAll({
         where: {
@@ -33,11 +74,16 @@ module.exports = {
       })
       .then((result) => {
         return result.map((el) => {
-          tags
+          return tags
             .findOne({
-              id: el.dataValues.tagid,
+              where: {
+                id: el.dataValues.tagid,
+              },
             })
-            .then((result) => result.dataValues.tagname);
+            .then((result) => {
+              console.log(result.dataValues);
+              return result.dataValues.name;
+            });
         });
       })
       .then((result) => {

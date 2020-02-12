@@ -44,7 +44,36 @@ module.exports = {
       .findOne({
         where: {
           email,
-          password,
+        },
+      })
+      .then((result) => {
+        console.log(result.dataValues);
+        if (password !== result.dataValues.password) {
+          return {
+            success: true,
+            payload: null,
+            message: 'wrong password',
+          };
+        }
+        return {
+          success: true,
+          payload: result.dataValues,
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not exists',
+        };
+      });
+  },
+  findById: function(userid) {
+    return users
+      .findOne({
+        where: {
+          id: userid,
         },
       })
       .then((result) => {
@@ -59,6 +88,28 @@ module.exports = {
         return {
           success: false,
           payload: error.toString(),
+          message: 'not exists',
+        };
+      });
+  },
+  findByCompany: function(companyid) {
+    return users
+      .findAll({
+        where: {
+          companyid,
+        },
+      })
+      .then((result) => {
+        return {
+          success: true,
+          payload: result.map((el) => el.dataValues),
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        return {
+          success: false,
+          payload: JSON.stringify(error),
           message: 'not exists',
         };
       });
