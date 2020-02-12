@@ -24,6 +24,16 @@ module.exports = {
           key: 'id',
         },
       },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: new Date(),
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: new Date(),
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
