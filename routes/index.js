@@ -31,6 +31,10 @@ router.get('/post', postController.board.get);
 
 router.get('/post/:id', postController.boardbyid.get);
 
+router.post('/post/update', postController.update.post);
+
+router.post('/post/delete', postController.delete.post);
+
 router.get('/blog/main', blogController.main.get);
 
 router.get('/blog/dev', blogController.dev.get);

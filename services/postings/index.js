@@ -173,7 +173,7 @@ module.exports = {
         },
         {
           where: {
-            postid,
+            id: postid,
           },
         },
       )
@@ -240,6 +240,29 @@ module.exports = {
           success: false,
           payload: error.toString(),
           message: 'not updated',
+        };
+      });
+  },
+  delete: function(postid) {
+    return postings
+      .destroy({
+        where: {
+          id: postid,
+        },
+      })
+      .then((result) => {
+        console.log(result.dataValues);
+        return {
+          success: true,
+          payload: result.dataValues,
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not exists',
         };
       });
   },
