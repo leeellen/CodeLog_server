@@ -5,7 +5,7 @@ const { postings, tags } = require('../../services');
 
 module.exports = {
   post: asyncHandler(async (req, res) => {
-    const { id, title, content } = req.body;
+    const { id } = req.body;
     const { token } = req.cookies;
 
     const decodeData = await isValid(token);
@@ -22,17 +22,17 @@ module.exports = {
     }
     const postingInfo = findresult.payload;
 
-    if (postingInfo.userid !== userid) {
-      res.status(403).send('It is not your posting');
+    if (postingInfo.userid === userid) {
+      res.status(403).send("You can't like yourself");
       return;
     }
 
-    const updateResult = await postings.update(id, title, content);
-    if (!updateResult.success) {
-      res.status(404).send("There's an error while updating your posting");
+    const likeResult = await postings.increaseLike(id);
+    if (!likeResult.success) {
+      res.status(404).send("There's an error while liking");
       return;
     }
 
-    res.status(200).send('successfully updated');
+    res.status(200).send('successfully liked');
   }),
 };

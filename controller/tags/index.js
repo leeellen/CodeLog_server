@@ -9,6 +9,8 @@ module.exports = {
       res.status(404).send("There's an error while finding tags");
       return;
     }
-    res.status(200).send(getTagResult.payload);
+    res.status(200).send({
+      tags: getTagResult.payload,
+    });
   }),
 };

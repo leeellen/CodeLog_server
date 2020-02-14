@@ -25,7 +25,7 @@ router.post('/post', postController.board.post);
 
 router.get('/mypage/company', mypageController.company.get);
 
-router.get('/mypage/developer', mypageController.developer.get);
+router.get('/mypage', mypageController.developer.get);
 
 router.get('/post', postController.board.get);
 
@@ -35,7 +35,9 @@ router.post('/post/update', postController.update.post);
 
 router.post('/post/delete', postController.delete.post);
 
-router.get('/blog/main', blogController.main.get);
+router.post('/post/like', postController.like.post);
+
+router.get('/blog', blogController.main.get);
 
 router.get('/blog/dev', blogController.dev.get);
 
