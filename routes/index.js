@@ -7,6 +7,7 @@ const {
   blogController,
   mypageController,
   tagController,
+  homeController,
 } = require('../controller');
 
 router.get('/', function(req, res, next) {
@@ -16,6 +17,8 @@ router.get('/', function(req, res, next) {
 router.post('/signup', authController.signup.post);
 
 router.post('/signin', authController.signin.post);
+
+router.post('/signup/company', authController.csignup.post);
 
 router.post('/signout', authController.signout.post);
 
@@ -48,5 +51,7 @@ router.get('/blog/til', blogController.til.get);
 router.get('/blog/tech', blogController.tech.get);
 
 router.get('/tags', tagController.get);
+
+router.get('/home', homeController.get);
 
 module.exports = router;

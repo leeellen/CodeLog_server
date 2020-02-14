@@ -1,7 +1,7 @@
 const { users } = require('../../models');
 
 module.exports = {
-  create: function(email, username, password, companyid, rank, completion, website) {
+  create: function(email, username, password, companyid, position, completion, website) {
     console.log(email);
     return users
       .findOrCreate({
@@ -12,7 +12,7 @@ module.exports = {
           username,
           password,
           companyid,
-          rank,
+          position,
           completion,
           website,
         },
@@ -114,14 +114,14 @@ module.exports = {
         };
       });
   },
-  updateByEmail: function(email, username, password, companyid, rank, completion, website) {
+  updateByEmail: function(email, username, password, companyid, position, completion, website) {
     return users
       .update(
         {
           username,
           password,
           companyid,
-          rank,
+          position,
           completion,
           website,
         },

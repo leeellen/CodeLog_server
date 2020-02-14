@@ -2,6 +2,33 @@ const { companies, users } = require('../../models');
 const Sequelize = require('sequelize');
 
 module.exports = {
+  create: function(code, name, info, ispartner, bname, eid, homepage) {
+    return companies
+      .create({
+        code,
+        name,
+        info,
+        ispartner,
+        bname,
+        eid,
+        homepage,
+      })
+      .then((result) => {
+        return {
+          success: true,
+          payload: result.dataValues,
+          message: 'created',
+        };
+      })
+      .catch((error) => {
+        console.log(error);
+        return {
+          success: false,
+          payload: JSON.stringify(error),
+          message: 'duplicated',
+        };
+      });
+  },
   find: function(companyid) {
     return companies
       .findOne({
@@ -20,7 +47,7 @@ module.exports = {
       .catch((error) => {
         return {
           success: false,
-          payload: error.toString(),
+          payload: JSON.stringify(error),
           message: 'not exists',
         };
       });
