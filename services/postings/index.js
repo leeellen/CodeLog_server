@@ -221,6 +221,29 @@ module.exports = {
         };
       });
   },
+  getTags: function(postid) {
+    return postings_tags
+      .findAll({
+        where: {
+          postid,
+        },
+      })
+      .then((result) => {
+        return {
+          success: true,
+          payload: result.map((el) => el.dataValues),
+          message: 'exists',
+        };
+      })
+      .catch((error) => {
+        console.log(error);
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not exists',
+        };
+      });
+  },
   addTags: function(postid, tagids) {
     tagids = tagids.map((el) => {
       return { tagid: el, postid };
@@ -232,6 +255,28 @@ module.exports = {
           success: true,
           payload: null,
           message: 'updated',
+        };
+      })
+      .catch((error) => {
+        console.log(error);
+        return {
+          success: false,
+          payload: error.toString(),
+          message: 'not updated',
+        };
+      });
+  },
+  deleteTags: function(postid, tagids) {
+    tagids = tagids.map((el) => {
+      return { tagid: el, postid };
+    });
+    return postings_tags
+      .bulkDelete(tagids)
+      .then((result) => {
+        return {
+          success: true,
+          payload: null,
+          message: 'deleted',
         };
       })
       .catch((error) => {
