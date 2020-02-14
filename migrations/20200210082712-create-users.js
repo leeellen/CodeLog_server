@@ -29,7 +29,7 @@ module.exports = {
         },
         defaultValue: 1,
       },
-      rank: {
+      position: {
         type: Sequelize.STRING,
       },
       completion: {

@@ -6,8 +6,9 @@ module.exports = {
     demoArr.push({
       code: '',
       name: 'independent',
+      info: '',
       ispartner: 0,
-      mutual: '',
+      bname: '',
       eid: '',
       homepage: '',
     });
@@ -16,8 +17,9 @@ module.exports = {
         demoArr.push({
           code: `${i}`.repeat(9),
           name: 'company' + i,
+          info: `${i}`.repeat(100),
           ispartner: 1,
-          mutual: 'mutual' + i,
+          bname: 'bname' + i,
           eid: '999-99-9999' + i,
           homepage: `https://company${i}.com/`,
         });
@@ -25,8 +27,9 @@ module.exports = {
         demoArr.push({
           code: null,
           name: 'company' + i,
+          info: `${i}`.repeat(100),
           ispartner: 0,
-          mutual: 'mutual' + i,
+          bname: 'bname' + i,
           eid: '999-99-9999' + i,
           homepage: `https://company${i}.com/`,
         });

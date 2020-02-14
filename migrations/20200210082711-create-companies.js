@@ -17,10 +17,14 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      info: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
       ispartner: {
         type: Sequelize.BOOLEAN,
       },
-      mutual: {
+      bname: {
         type: Sequelize.STRING,
         allowNull: false,
       },
