@@ -20,8 +20,8 @@ module.exports = {
       res.status(404).send("i found your postings, but i can't find writer");
       return;
     }
-    const { email, username, rank, completion } = userfindResult.payload;
-    postingInfo['users'] = { email, username, rank, completion };
+    const { email, username, position, completion } = userfindResult.payload;
+    postingInfo['users'] = { email, username, position, completion };
 
     let tagfindResult = await tags.findNamesByPostId(id);
     if (!tagfindResult.success) {

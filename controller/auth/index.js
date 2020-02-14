@@ -3,4 +3,5 @@ module.exports = {
   signout: require('./signout'),
   signup: require('./signup'),
   duplicate: require('./duplicate'),
+  csignup: require('./csignup'),
 };

@@ -4,14 +4,14 @@ const { users } = require('../../services');
 
 module.exports = {
   post: asyncHandler(async (req, res) => {
-    const { email, username, password, companyid, rank, completion, website } = req.body;
+    const { email, username, password, companyid, position, completion, website } = req.body;
 
     let result = await users.create(
       email,
       username,
       password,
       companyid,
-      rank,
+      position,
       completion,
       website,
     );

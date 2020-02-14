@@ -4,4 +4,5 @@ module.exports = {
   blogController: require('./blog'),
   mypageController: require('./mypage'),
   tagController: require('./tags'),
+  homeController: require('./home'),
 };
