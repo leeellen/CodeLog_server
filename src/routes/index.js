@@ -8,7 +8,7 @@ const {
   mypageController,
   tagController,
   homeController,
-} = require('../../controller');
+} = require('../controller');
 
 router.get('/', function(req, res, next) {
   res.send('server exists');

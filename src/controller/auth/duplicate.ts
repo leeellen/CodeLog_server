@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
+const { users } = require('../../services');
 
 import { Request, Response } from 'express';
-import { users } from '../../services';
 import { Result } from '../../interfaces';
 
 module.exports = {

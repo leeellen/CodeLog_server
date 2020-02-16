@@ -1,8 +1,8 @@
 const asyncHandler = require('express-async-handler');
+const { postings } = require('../../services');
+const { isValid } = require('../../utils/token');
 
 import { Request, Response } from 'express';
-const { isValid } = require('../../utils/token');
-const { postings } = require('../../services');
 
 interface Decode {
   isValid: boolean;

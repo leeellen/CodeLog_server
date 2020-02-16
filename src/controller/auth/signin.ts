@@ -1,8 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const { tokenGenerator } = require('../../utils/token');
+const { users } = require('../../services');
 
 import { Request, Response } from 'express';
-import { users } from '../../services';
 import { Result, userSignInBody } from '../../interfaces';
 
 module.exports = {
