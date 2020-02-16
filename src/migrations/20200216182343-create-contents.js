@@ -15,7 +15,7 @@ module.exports = {
           key: 'id',
         },
       },
-      subtitieid: {
+      subtitleid: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Subtitles',
