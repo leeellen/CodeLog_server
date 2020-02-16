@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Contents', {
+    return queryInterface.createTable('postings_tags', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,21 +9,18 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       postid: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
         references: {
           model: 'Postings',
           key: 'id',
         },
       },
-      subtitieid: {
-        type: Sequelize.NUMBER,
+      tagid: {
+        type: Sequelize.INTEGER,
         references: {
-          model: 'Subtitles',
+          model: 'Tags',
           key: 'id',
         },
-      },
-      body: {
-        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,
@@ -38,6 +35,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Contents');
+    return queryInterface.dropTable('postings_tags');
   },
 };
