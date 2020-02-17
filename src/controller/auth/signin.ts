@@ -9,7 +9,7 @@ module.exports = {
   post: asyncHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body as userSignInBody;
 
-    let userData: Result = await users.find(email, password);
+    const userData: Result = await users.find(email, password);
     if (!userData.success) {
       res.status(404).send(`User with ${email} doesn't exist`);
       return;
@@ -19,7 +19,7 @@ module.exports = {
       return;
     }
 
-    let token: string = await tokenGenerator({ id: userData.payload.id });
+    const token: string = await tokenGenerator({ id: userData.payload.id });
 
     res
       .cookie('token', token)

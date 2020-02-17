@@ -13,7 +13,7 @@ const { users } = require('../../services');
 module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { email, password } = req.body;
-        let userData = yield users.find(email, password);
+        const userData = yield users.find(email, password);
         if (!userData.success) {
             res.status(404).send(`User with ${email} doesn't exist`);
             return;
@@ -22,7 +22,7 @@ module.exports = {
             res.status(403).send(`wrong password`);
             return;
         }
-        let token = yield tokenGenerator({ id: userData.payload.id });
+        const token = yield tokenGenerator({ id: userData.payload.id });
         res
             .cookie('token', token)
             .status(200)
