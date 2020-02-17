@@ -28,8 +28,10 @@ module.exports = {
     if (!result.success) {
       if (result.message === 'duplicated') {
         res.status(409).send('User already exists');
+        return;
       } else {
         res.sendStatus(500);
+        return;
       }
     }
 
