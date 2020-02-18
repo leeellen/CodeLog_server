@@ -13,7 +13,8 @@ export interface Decode {
 }
 
 export interface userSignInBody {
-  email: string;
+  email?: string;
+  username?: string;
   password: string;
 }
 
@@ -29,8 +30,8 @@ export interface userSignUpBody {
 
 export interface companyMember {
   position: string;
-  email: string;
-  username: string;
+  email?: string;
+  username?: string;
   password: string;
 }
 
@@ -42,4 +43,60 @@ export interface companySignUpBody {
   eid: string;
   homepage: string;
   member: companyMember;
+}
+
+export interface companySignInBody {
+  company_code: string;
+  email?: string;
+  username?: string;
+  password: string;
+}
+
+export interface UserServiceType {
+  signin: (emailOrUsername: string, password: string) => Promise<Result>;
+  signup: (userRecord: UserRecord) => Promise<Result>;
+  checkEmail: (email: string) => Promise<Result>;
+}
+
+export interface UserRecord {
+  email: string;
+  username: string;
+  password: string;
+  companyid: number;
+  position: string;
+  website: string;
+}
+
+export interface PostingServiceType {}
+
+export interface PostingRecord {
+  title: string;
+  likes: number;
+  content: string | TILContent | TechContent | DevContent;
+  theme: string;
+  userid: number;
+}
+
+export interface TILContent {
+  fact: string;
+  feeling: string;
+  finding: string;
+  futureAction: string;
+}
+
+export interface TechContent {
+  concept: string;
+  background: string;
+  definition: string;
+  example: string;
+  precautions: string;
+  recommend: string;
+}
+
+export interface DevContent {
+  concept: string;
+  strategy: string;
+  difficulty: string;
+  reference: string;
+  lesson: string;
 }
