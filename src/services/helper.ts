@@ -1,7 +1,7 @@
-export default function handlePromise(promise: Promise<any>) {
+module.exports = (promise: Promise<any>) => {
   return promise
     .then((res) => {
-      if (res instanceof String) {
+      if (typeof res === 'string') {
         return res;
       }
       const data = Array.isArray(res) ? res.map((el) => el.dataValues) : res.dataValues;
@@ -11,4 +11,4 @@ export default function handlePromise(promise: Promise<any>) {
       console.log(err);
       return null;
     });
-}
+};

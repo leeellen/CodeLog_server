@@ -1,27 +1,20 @@
 const { Users } = require('../../models');
-const { handlePromise } = require('../helper');
+const handlePromise = require('../helper');
+import { UserRecord } from '../../interfaces';
 
-export default {
-  create: (email, username, password, companyid, position, completion, website) =>
+module.exports = {
+  create: (userData: UserRecord) =>
     handlePromise(
       Users.findOrCreate({
         where: {
-          email,
+          email: userData.email,
         },
-        defaults: {
-          email,
-          username,
-          password,
-          companyid,
-          position,
-          completion,
-          website,
-        },
+        defaults: userData,
       }).spread((result, created) => {
         return created ? 'created' : 'duplicated';
       }),
     ),
-  findByEmail: (email) =>
+  findByEmail: (email: string) =>
     handlePromise(
       Users.findOne({
         where: {
@@ -29,7 +22,7 @@ export default {
         },
       }),
     ),
-  findByUsername: (username) =>
+  findByUsername: (username: string) =>
     handlePromise(
       Users.findOne({
         where: {
@@ -37,7 +30,7 @@ export default {
         },
       }),
     ),
-  findByCompany: (companyid) =>
+  findByCompany: (companyid: number) =>
     handlePromise(
       Users.findAll({
         where: {

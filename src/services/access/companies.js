@@ -1,5 +1,5 @@
 const { Companies } = require('../../models');
-const { handlePromise } = require('../helper');
+const handlePromise = require('../helper');
 const Sequelize = require('sequelize');
 
 module.exports = {

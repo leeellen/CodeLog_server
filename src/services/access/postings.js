@@ -1,18 +1,9 @@
 const { Postings, postings_tags } = require('../../models');
-const { handlePromise } = require('../helper');
+const handlePromise = require('../helper');
 const Sequelize = require('sequelize');
 
 module.exports = {
-  create: (userid, title, typeid, likes, theme) =>
-    handlePromise(
-      Postings.create({
-        title,
-        likes,
-        typeid,
-        theme,
-        userid,
-      }),
-    ),
+  create: (postingData) => handlePromise(Postings.create(postingData)),
   find: (postid) =>
     handlePromise(
       Postings.findOne({
