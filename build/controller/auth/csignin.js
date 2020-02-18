@@ -9,23 +9,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const asyncHandler = require('express-async-handler');
 const { tokenGenerator } = require('../../utils/token');
-const { userService } = require('../../services');
+const { users, companies } = require('../../services');
 module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { email, username, password } = req.body;
-        const emailOrUsername = email || username;
-        let statusCode = 200;
-        let message = '';
-        const userData = yield userService.signin(emailOrUsername, password);
+        const { company_code, email, username, password } = req.body;
+        const userData = yield users.find(email, password);
         if (!userData.success) {
-            statusCode = 404;
-            message = userData.message;
+            res.status(404).send(`User with ${email} doesn't exist`);
+            return;
         }
-        else {
-            const token = yield tokenGenerator({ id: userData.payload.id });
-            res.cookie('token', token);
-            message = 'Token generated';
+        if (!userData.payload) {
+            res.status(403).send(`wrong password`);
+            return;
         }
-        res.status(statusCode).send(message);
+        const companyData = yield companies.find(userData.payload.companyid);
+        if (!companyData.success) {
+            res.status(404).send(`User doesn't have company`);
+            return;
+        }
+        if (company_code !== companyData.payload.code) {
+            res.status(403).send(`companycode doesn't match`);
+            return;
+        }
+        const token = yield tokenGenerator({ id: userData.payload.id });
+        res
+            .cookie('token', token)
+            .status(200)
+            .send('Token generated');
     })),
 };

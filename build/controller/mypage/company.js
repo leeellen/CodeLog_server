@@ -13,7 +13,7 @@ const { companies, users } = require('../../services');
 module.exports = {
     get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { token } = req.cookies;
-        let decodeData = yield isValid(token);
+        const decodeData = yield isValid(token);
         if (!decodeData.isValid) {
             res.status(403).send('login required');
             return;

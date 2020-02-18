@@ -8,19 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const asyncHandler = require('express-async-handler');
-const { users } = require('../../services');
+const { userService } = require('../../services');
 module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const email = req.body.email;
+        let statusCode = 200;
+        let message = '';
         const re = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
         if (!re.test(String(email).toLowerCase())) {
-            res.status(200).send('It is not email');
+            statusCode = 400;
+            message = 'it is not email';
         }
-        let userResult = yield users.find(email, null);
-        if (userResult.success) {
-            res.status(200).send(`This email has already joined`);
-            return;
+        else {
+            const checkEmail = yield userService.checkEmail(email);
+            if (!checkEmail.success) {
+                statusCode = 409;
+                message = 'already joined';
+            }
+            else {
+                message = `This email is usable!`;
+            }
         }
-        res.status(200).send(`This email is usable!`);
+        res.status(statusCode).send(message);
     })),
 };
