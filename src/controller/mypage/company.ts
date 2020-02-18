@@ -10,7 +10,7 @@ module.exports = {
   get: asyncHandler(async (req: Request, res: Response) => {
     const { token } = req.cookies;
 
-    let decodeData: Decode = await isValid(token);
+    const decodeData: Decode = await isValid(token);
     if (!decodeData.isValid) {
       res.status(403).send('login required');
       return;

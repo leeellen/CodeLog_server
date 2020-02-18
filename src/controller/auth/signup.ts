@@ -1,40 +1,28 @@
 const asyncHandler = require('express-async-handler');
-const { users } = require('../../services');
+const { userService } = require('../../services');
 
 import { Request, Response } from 'express';
-import { Result, userSignUpBody } from '../../interfaces';
+import { Result, UserRecord } from '../../interfaces';
 
 module.exports = {
   post: asyncHandler(async (req: Request, res: Response) => {
-    const {
-      email,
-      username,
-      password,
-      companyid,
-      position,
-      completion,
-      website,
-    } = req.body as userSignUpBody;
+    const userData: UserRecord = req.body;
 
-    let result: Result = await users.create(
-      email,
-      username,
-      password,
-      companyid,
-      position,
-      completion,
-      website,
-    );
-    if (!result.success) {
-      if (result.message === 'duplicated') {
-        res.status(409).send('User already exists');
-        return;
+    let statusCode = 200;
+    let message = '';
+
+    const signResult: Result = await userService.signup(userData);
+    if (!signResult.success) {
+      if (signResult.message === 'duplicated') {
+        statusCode = 409;
+        message = 'User already exists';
       } else {
-        res.sendStatus(500);
-        return;
+        statusCode = 500;
       }
+    } else {
+      message = 'User successfully created!';
     }
 
-    res.status(200).send('User successfully created!');
+    res.status(statusCode).send(message);
   }),
 };
