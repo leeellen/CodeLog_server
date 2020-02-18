@@ -1,55 +1,28 @@
 const { Companies } = require('../../models');
+const { handlePromise } = require('../helper');
 const Sequelize = require('sequelize');
 
 module.exports = {
-  create: function(code, name, info, ispartner, bname, eid, homepage) {
-    return Companies.create({
-      code,
-      name,
-      info,
-      ispartner,
-      bname,
-      eid,
-      homepage,
-    })
-      .then((result) => {
-        return {
-          success: true,
-          payload: result.dataValues,
-          message: 'created',
-        };
-      })
-      .catch((error) => {
-        console.log(error);
-        return {
-          success: false,
-          payload: JSON.stringify(error),
-          message: 'duplicated',
-        };
-      });
-  },
-  find: function(companyid) {
-    return Companies.findOne({
-      where: {
-        id: companyid,
-      },
-    })
-      .then((result) => {
-        console.log(result.dataValues);
-        return {
-          success: true,
-          payload: result.dataValues,
-          message: 'exists',
-        };
-      })
-      .catch((error) => {
-        return {
-          success: false,
-          payload: JSON.stringify(error),
-          message: 'not exists',
-        };
-      });
-  },
+  create: (code, name, info, ispartner, bname, eid, homepage) =>
+    handlePromise(
+      Companies.create({
+        code,
+        name,
+        info,
+        ispartner,
+        bname,
+        eid,
+        homepage,
+      }),
+    ),
+  find: (companyid) =>
+    handlePromise(
+      Companies.findOne({
+        where: {
+          id: companyid,
+        },
+      }),
+    ),
   changeUser: function(companyid, userid) {},
   deleteUser: function(companyid, userid) {},
 };
