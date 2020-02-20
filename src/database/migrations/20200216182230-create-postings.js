@@ -16,18 +16,14 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
-      typeid: {
+      type_id: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Types',
           key: 'id',
         },
       },
-      theme: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      userid: {
+      user_id: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',

@@ -1,4 +1,4 @@
-const { Users } = require('../../models');
+const { Users } = require('../../database/models');
 const handlePromise = require('../helper');
 import { UserRecord } from '../../interfaces';
 
@@ -30,30 +30,20 @@ module.exports = {
         },
       }),
     ),
-  findByCompany: (companyid: number) =>
+  findByCompany: (company_id: number) =>
     handlePromise(
       Users.findAll({
         where: {
-          companyid,
+          company_id,
         },
       }),
     ),
-  updateByEmail: (email, username, password, companyid, position, completion, website) =>
+  updateByEmail: (userData: UserRecord) =>
     handlePromise(
-      Users.update(
-        {
-          username,
-          password,
-          companyid,
-          position,
-          completion,
-          website,
+      Users.update(userData, {
+        where: {
+          email: userData.email,
         },
-        {
-          where: {
-            email,
-          },
-        },
-      ),
+      }),
     ),
 };

@@ -1,6 +1,7 @@
 const users = require('./access/users');
+const { isValid } = require('../utils/token');
 
-import { UserRecord, UserServiceType } from '../interfaces';
+import { UserRecord, UserServiceType, Decode } from '../interfaces';
 
 const UserService: UserServiceType = {
   signin: async (emailOrUsername: string, password: string) => {
@@ -21,7 +22,7 @@ const UserService: UserServiceType = {
 
     if (userData.password !== password) {
       return {
-        success: false,
+        success: true,
         payload: null,
         message: 'wrong password',
       };
@@ -43,7 +44,9 @@ const UserService: UserServiceType = {
         payload: null,
         message: 'duplicated',
       };
-    } else if (userCreate === 'created') {
+    }
+
+    if (userCreate === 'created') {
       return {
         success: true,
         payload: null,
@@ -58,21 +61,58 @@ const UserService: UserServiceType = {
     };
   },
 
+  findByToken: async (token: string) => {
+    const decode: Decode = await isValid(token);
+    if (!decode.isValid) {
+      return {
+        success: false,
+        payload: null,
+        message: 'login required',
+      };
+    }
+    const { email, password } = decode.userData;
+
+    const userData: UserRecord | null = await users.findByEmail(email);
+
+    if (!userData) {
+      return {
+        success: false,
+        payload: null,
+        message: 'unvalid user',
+      };
+    }
+
+    if (userData.password !== password) {
+      return {
+        success: true,
+        payload: null,
+        message: 'wrong password',
+      };
+    }
+
+    return {
+      success: true,
+      payload: userData,
+      message: 'id found',
+    };
+  },
+
   checkEmail: async (email: string) => {
     const findRecord: UserRecord | null = await users.findByEmail(email);
+
     if (!findRecord) {
       return {
         success: true,
         payload: null,
         message: 'not duplicated',
       };
-    } else {
-      return {
-        success: false,
-        payload: null,
-        message: 'duplicated',
-      };
     }
+
+    return {
+      success: false,
+      payload: null,
+      message: 'duplicated',
+    };
   },
 };
 

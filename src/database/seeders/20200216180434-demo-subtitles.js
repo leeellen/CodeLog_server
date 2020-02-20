@@ -5,25 +5,32 @@ module.exports = {
     let demoArr = [
       {
         name: 'content',
-        typeid: 1,
+        type_id: 1,
       },
     ];
-    ['fact', 'feeling', 'finding', 'futureAction'].map((el) => {
+    ['til_fact', 'til_feeling', 'til_finding', 'til_futureAction'].map((el) => {
       demoArr.push({
         name: el,
-        typeid: 2,
+        type_id: 2,
       });
     });
-    ['concept', 'background', 'definition', 'example', 'precautions', 'recommend'].map((el) => {
+    [
+      'tech_concept',
+      'tech_background',
+      'tech_definition',
+      'tech_example',
+      'tech_precautions',
+      'tech_recommend',
+    ].map((el) => {
       demoArr.push({
         name: el,
-        typeid: 3,
+        type_id: 3,
       });
     });
-    ['concept', 'strategy', 'difficulty', 'reference', 'lesson'].map((el) => {
+    ['dev_concept', 'dev_strategy', 'dev_difficulty', 'dev_reference', 'dev_lesson'].map((el) => {
       demoArr.push({
         name: el,
-        typeid: 4,
+        type_id: 4,
       });
     });
     return queryInterface.bulkInsert('Subtitles', demoArr);

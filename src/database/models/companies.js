@@ -6,10 +6,10 @@ module.exports = (sequelize, DataTypes) => {
       code: DataTypes.STRING,
       name: DataTypes.STRING,
       info: DataTypes.TEXT,
-      ispartner: DataTypes.BOOLEAN,
-      bname: DataTypes.STRING,
+      partner: DataTypes.BOOLEAN,
+      business_name: DataTypes.STRING,
       eid: DataTypes.STRING,
-      homepage: DataTypes.STRING,
+      company_homepage: DataTypes.STRING,
     },
     {},
   );

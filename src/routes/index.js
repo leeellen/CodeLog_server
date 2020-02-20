@@ -38,6 +38,8 @@ router.post('/post/update', postController.update.post);
 
 router.post('/post/delete', postController.delete.post);
 
+router.delete('/post', postController.delete.post);
+
 router.post('/post/like', postController.like.post);
 
 router.get('/blog', blogController.main.get);

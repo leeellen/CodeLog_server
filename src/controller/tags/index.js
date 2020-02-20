@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 
-const { tags } = require('../../services');
+const { tags } = require('../../services/access');
 
 module.exports = {
   get: asyncHandler(async (req, res) => {

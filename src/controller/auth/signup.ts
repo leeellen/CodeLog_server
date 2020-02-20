@@ -8,21 +8,17 @@ module.exports = {
   post: asyncHandler(async (req: Request, res: Response) => {
     const userData: UserRecord = req.body;
 
-    let statusCode = 200;
-    let message = '';
-
-    const signResult: Result = await userService.signup(userData);
-    if (!signResult.success) {
-      if (signResult.message === 'duplicated') {
-        statusCode = 409;
-        message = 'User already exists';
+    const result: Result = await userService.signup(userData);
+    if (!result.success) {
+      if (result.message === 'duplicated') {
+        res.status(409).send('User already exists');
+        return;
       } else {
-        statusCode = 500;
+        res.sendStatus(500);
+        return;
       }
-    } else {
-      message = 'User successfully created!';
     }
 
-    res.status(statusCode).send(message);
+    res.status(200).send('User successfully created!');
   }),
 };

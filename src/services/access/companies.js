@@ -1,25 +1,24 @@
-const { Companies } = require('../../models');
+const { Companies } = require('../../database/models');
 const handlePromise = require('../helper');
-const Sequelize = require('sequelize');
 
 module.exports = {
-  create: (code, name, info, ispartner, bname, eid, homepage) =>
+  create: (code, name, info, partner, business_name, eid, company_homepage) =>
     handlePromise(
       Companies.create({
         code,
         name,
         info,
-        ispartner,
-        bname,
+        partner,
+        business_name,
         eid,
-        homepage,
+        company_homepage,
       }),
     ),
-  find: (companyid) =>
+  find: (company_id) =>
     handlePromise(
       Companies.findOne({
         where: {
-          id: companyid,
+          id: company_id,
         },
       }),
     ),
