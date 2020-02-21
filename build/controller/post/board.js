@@ -63,7 +63,18 @@ module.exports = {
             res.status(403).send('login required');
             return;
         }
-        postingData.user_id = userResult.payload.id;
+        const user_id = userResult.payload.id;
+        console.log(user_id);
+        const postingInfo = yield postingService.find(postingData.id);
+        if (!postingInfo.success) {
+            res.status(404).send("i can't find your postings");
+            return;
+        }
+        if (postingInfo.payload.user_id !== user_id) {
+            console.log(postingInfo.payload);
+            res.status(403).send('It is not your posting');
+            return;
+        }
         const updateResult = yield postingService.update(postingData);
         if (!updateResult.success) {
             res.status(404).send("i can't update your postings");
@@ -97,5 +108,14 @@ module.exports = {
             return;
         }
         res.status(200).send('successfully deleted');
+    })),
+    test: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { id } = req.body;
+        const postingInfo = yield postingService.test(id);
+        if (!postingInfo.success) {
+            res.status(404).send("i can't find your postings");
+            return;
+        }
+        res.status(200).send(postingInfo);
     })),
 };

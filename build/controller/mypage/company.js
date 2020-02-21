@@ -8,25 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const asyncHandler = require('express-async-handler');
-const { isValid } = require('../../utils/token');
-const { userService } = require('../../services');
+const { userService, companyService } = require('../../services');
 module.exports = {
     get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { token } = req.cookies;
-        const userData = userService.findByToken(token);
-        const findCompanyResult = yield companies.find(companyId);
-        if (!findUserResult.success) {
+        const userData = yield userService.findByToken(token);
+        const findCompanyResult = yield companyService.find(userData.payload.company_id);
+        if (!findCompanyResult.success) {
             res.status(404).send(`There's an error while finding your company`);
             return;
         }
         let companyData = findCompanyResult.payload;
-        const findMemberResult = yield users.findByCompany(companyId);
-        if (!findMemberResult.success) {
-            console.log(findMemberResult.payload);
-            res.status(404).send(`There's an error while finding your company's members`);
-            return;
-        }
-        companyData['users'] = findMemberResult.payload;
         res.status(200).send(companyData);
     })),
 };

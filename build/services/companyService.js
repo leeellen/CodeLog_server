@@ -82,5 +82,21 @@ const CompanyService = {
             message: 'created',
         };
     }),
-    mypage: (user_id) => { },
+    find: (company_id) => __awaiter(void 0, void 0, void 0, function* () {
+        const companyData = yield companies.find(company_id);
+        console.log(companyData);
+        if (!companyData) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't find company",
+            };
+        }
+        return {
+            success: true,
+            payload: companyData,
+            message: 'successfully found',
+        };
+    }),
 };
+module.exports = CompanyService;

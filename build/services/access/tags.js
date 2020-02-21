@@ -7,5 +7,10 @@ module.exports = {
             name: tagname,
         },
     })),
+    deleteByPostId: (post_id) => handlePromise(postings_tags.destroy({
+        where: {
+            post_id,
+        },
+    })),
     addAllTags: (tagDatas) => handlePromise(postings_tags.bulkCreate(tagDatas)),
 };

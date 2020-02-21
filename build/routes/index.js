@@ -13,6 +13,7 @@ router.get('/mypage', mypageController.developer.get);
 router.get('/mypage/company', mypageController.company.get);
 // * POST
 router.post('/post', postController.board.post);
+router.post('/test', postController.board.test);
 router.get('/post', postController.board.get);
 router.put('/post', postController.board.put);
 router.delete('/post', postController.board.delete);
@@ -29,10 +30,8 @@ router.delete('/post/like', postController.like.delete);
 router.delete('/post/like/:id', postController.likebyid.delete);
 // * BLOG
 router.get('/blog', blogController.main.get);
-router.get('/blog/dev', blogController.dev.get);
-router.get('/blog/plain', blogController.plain.get);
-router.get('/blog/til', blogController.til.get);
-router.get('/blog/tech', blogController.tech.get);
+// * TAG
 router.get('/tags', tagController.get);
+// * HOME
 router.get('/home', homeController.get);
 module.exports = router;
