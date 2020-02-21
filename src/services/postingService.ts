@@ -1,4 +1,4 @@
-const { users, postings, types, subtitles, contents } = require('./access');
+const { users, postings, types, subtitles, contents, tags } = require('./access');
 
 import {
   PostingRecord,
@@ -7,18 +7,33 @@ import {
   SubtitleRecord,
   ContentRecord,
   UserRecord,
+  PTRecord,
+  TagRecord,
 } from '../interfaces';
 
-function handleDatas(newPostDatas: any) {
-  return newPostDatas.map((postData: any) => {
-    let obj: any = {};
-    for (let content of postData.Contents) {
-      obj[content.Subtitle.name] = content.body;
-    }
-    postData.content = obj;
-    delete postData.Contents;
-    return postData;
-  });
+function handleData(postData: any) {
+  postData.theme = postData.Type.name;
+  delete postData.Type;
+
+  let cobj: any = {};
+  for (let content of postData.Contents) {
+    cobj[content.Subtitle.name] = content.body;
+  }
+  postData.content = cobj;
+  delete postData.Contents;
+
+  let tagArr: any = [];
+  for (let ptcon of postData.postings_tags) {
+    tagArr.push(ptcon.Tag.name);
+  }
+  postData.selected_tags = tagArr;
+  delete postData.postings_tags;
+
+  return postData;
+}
+
+function handleDatas(postDatas: any) {
+  return postDatas.map((postData: any) => handleData(postData));
 }
 
 const postingService: PostingServiceType = {
@@ -82,16 +97,18 @@ const postingService: PostingServiceType = {
   },
 
   find: async (post_id: number) => {
-    let postData: PostingRecord | null = await postings.findById(post_id);
-    console.log(postData);
+    let postRecord: PostingRecord | null = await postings.findById(post_id);
+    console.log(postRecord);
 
-    if (!postData) {
+    if (!postRecord) {
       return {
         success: false,
         payload: null,
         message: "can't find post",
       };
     }
+
+    let postData = handleData(postRecord);
 
     const userData: UserRecord | null = await users.findById(postData.user_id);
     if (userData) {
@@ -102,37 +119,6 @@ const postingService: PostingServiceType = {
         certificate: userData.certificate,
       };
     }
-
-    const typeData: TypeRecord | null = await types.findById(postData.type_id);
-    if (!typeData) {
-      return {
-        success: false,
-        payload: null,
-        message: "can't find type",
-      };
-    }
-    postData.theme = typeData.name;
-
-    const subtDatas: Array<SubtitleRecord> | null = await subtitles.findByTypeid(postData.type_id);
-
-    const contentDatas: Array<ContentRecord> = await contents.findByPostId(postData.id);
-
-    if (contentDatas.length === 0 || !subtDatas) {
-      return {
-        success: false,
-        payload: null,
-        message: "can't put contents",
-      };
-    }
-
-    let content: any = {};
-
-    for (let subtitle of subtDatas) {
-      const { name, id } = subtitle;
-      content[name] = contentDatas.filter((el: ContentRecord) => el.subtitle_id === id)[0].body;
-    }
-    postData.content = content;
-
     return {
       success: true,
       payload: postData,
@@ -202,46 +188,51 @@ const postingService: PostingServiceType = {
   },
 
   findByTheme: async (user_id: number, theme: string) => {
-    const postDatas: Array<PostingRecord> | null = await postings.findByUserTheme(user_id, theme);
-    if (!postDatas) {
+    let themePostDatas: Array<any> | null = await postings.findByUserTheme(user_id, typeData.id);
+    if (!themePostDatas) {
       return {
         success: false,
         payload: null,
-        message: "can't find posts",
+        message: 'successnot',
       };
     }
-    const typeData: TypeRecord | null = await types.findByName(theme);
-    if (!typeData) {
-      return {
-        success: false,
-        payload: null,
-        message: "can't find type",
-      };
-    }
-    const subtDatas: Array<SubtitleRecord> | null = await subtitles.findByTypeid(postData.type_id);
-
-    const contentDatas: Array<ContentRecord> = await contents.findByPostId(postData.id);
-
-    if (contentDatas.length === 0 || !subtDatas) {
-      return {
-        success: false,
-        payload: null,
-        message: "can't put contents",
-      };
-    }
-
-    let content: any = {};
-
-    for (let subtitle of subtDatas) {
-      const { name, id } = subtitle;
-      content[name] = contentDatas.filter((el: ContentRecord) => el.subtitle_id === id)[0].body;
-    }
-    postData.content = content;
 
     return {
       success: true,
-      payload: postDatas,
+      payload: themePostDatas,
       message: 'successfully found',
+    };
+  },
+
+  addTags: async (post_id: number, selected_tags: Array<String>) => {
+    let tagDatas: Array<PTRecord> = [];
+    for (let tag_name of selected_tags) {
+      const findTag: TagRecord | null = await tags.findByName(tag_name);
+      if (!findTag) {
+        return {
+          success: false,
+          payload: null,
+          message: "can't find tag",
+        };
+      }
+      tagDatas.push({
+        post_id,
+        tag_id: findTag.id,
+      });
+    }
+
+    const addTag = await tags.addAllTags(tagDatas);
+    if (!addTag) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't put tags in",
+      };
+    }
+    return {
+      success: true,
+      payload: null,
+      message: 'successfully taged',
     };
   },
 

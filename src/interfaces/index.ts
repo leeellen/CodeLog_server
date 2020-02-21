@@ -80,6 +80,7 @@ export interface PostingRecord {
   type_id?: number;
   user_id?: number;
   user?: PostingUserRecord;
+  selected_tags?: Array<string> | Array<TagRecord>;
 }
 
 export interface CompanyRecord {
@@ -91,6 +92,7 @@ export interface CompanyRecord {
   business_name: string;
   eid: string;
   company_homepage: string;
+  member?: UserRecord;
 }
 
 export interface TILContent {
@@ -120,6 +122,11 @@ export interface DevContent {
 export interface TypeRecord {
   id: number;
   name: string;
+}
+
+export interface PTRecord {
+  post_id: number;
+  tag_id: number;
 }
 
 export interface SubtitleRecord {
@@ -153,8 +160,9 @@ export interface PostingServiceType {
   like: (post_id: number) => Promise<Result>;
   unlike: (post_id: number) => Promise<Result>;
   findByUser: (user_id: number) => Promise<Result>;
-  getHome: () => Promise<Result>;
   findByTheme: (user_id: number, theme: string) => Promise<Result>;
+  getHome: () => Promise<Result>;
+  addTags: (post_id: number, selected_tags: Array<string>) => Promise<Result>;
   update: (postingData: PostingRecord) => Promise<Result>;
   delete: (post_id: number) => Promise<Result>;
 }

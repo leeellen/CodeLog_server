@@ -1,3 +1,5 @@
+import { PTRecord } from '../../interfaces';
+
 const { Tags, postings_tags } = require('../../database/models');
 const handlePromise = require('../helper');
 
@@ -11,4 +13,6 @@ module.exports = {
         },
       }),
     ),
+
+  addAllTags: (tagDatas: Array<PTRecord>) => handlePromise(postings_tags.bulkCreate(tagDatas)),
 };
