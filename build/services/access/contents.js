@@ -1,9 +1,9 @@
 const { Contents } = require('../../database/models');
 const handlePromise = require('../helper');
 module.exports = {
-    create: (post_id, subtitleid, body) => handlePromise(Contents.create({
+    create: (post_id, subtitle_id, body) => handlePromise(Contents.create({
         post_id,
-        subtitleid,
+        subtitle_id,
         body,
     })),
     findByPostId: (post_id) => handlePromise(Contents.findAll({

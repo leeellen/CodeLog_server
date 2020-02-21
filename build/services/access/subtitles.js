@@ -7,4 +7,5 @@ module.exports = {
             type_id,
         },
     })),
+    getAllSubts: () => { },
 };

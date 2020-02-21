@@ -74,7 +74,7 @@ export interface PostingUserRecord {
 export interface PostingRecord {
   id?: number;
   title: string;
-  likes: number;
+  likes?: number;
   content: string | TILContent | TechContent | DevContent;
   theme: string;
   type_id?: number;
@@ -153,6 +153,8 @@ export interface PostingServiceType {
   like: (post_id: number) => Promise<Result>;
   unlike: (post_id: number) => Promise<Result>;
   findByUser: (user_id: number) => Promise<Result>;
+  getHome: () => Promise<Result>;
+  findByTheme: (user_id: number, theme: string) => Promise<Result>;
   update: (postingData: PostingRecord) => Promise<Result>;
   delete: (post_id: number) => Promise<Result>;
 }

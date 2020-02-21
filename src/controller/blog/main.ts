@@ -1,44 +1,22 @@
 const asyncHandler = require('express-async-handler');
-const { postings } = require('../../services');
-const { isValid } = require('../../utils/token');
+const { userService, postingService } = require('../../services');
 
 import { Request, Response } from 'express';
-
-interface Decode {
-  isValid: boolean;
-  token: string | undefined;
-  userData: {
-    id: string;
-  };
-}
-
-interface Result {
-  success: boolean;
-  payload: any;
-  message: string;
-}
+import { Result } from '../../interfaces';
 
 module.exports = {
   get: asyncHandler(async (req: Request, res: Response) => {
     const { token } = req.cookies;
 
-    let decodeData: Decode = await isValid(token);
-    if (!decodeData.isValid) {
+    const userResult: Result = await userService.findByToken(token);
+    if (!userResult.success) {
       res.status(403).send('login required');
       return;
     }
-    const userid: string = decodeData.userData.id;
+    let userData = userResult.payload;
 
-    let posts: Object = {};
-    for (let el of ['Plain', 'TIL', 'Tech', 'Dev']) {
-      const findResult: Result = await postings['find' + el](userid);
-      if (!findResult.success) {
-        res.status(404).send(`There's an error while finding your ${el} posts`);
-        return;
-      }
-      posts[el.toLowerCase() + '_posts'] = findResult.payload;
-    }
+    let blogPostDatas: any = await postingService.findByUser(userData.id);
 
-    res.status(200).send(posts);
+    res.status(200).send(blogPostDatas.payload);
   }),
 };

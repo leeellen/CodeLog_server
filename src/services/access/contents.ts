@@ -4,15 +4,16 @@ const { Contents } = require('../../database/models');
 const handlePromise = require('../helper');
 
 module.exports = {
-  create: (post_id: Number, subtitleid: Number, body: string) =>
+  create: (post_id: number, subtitle_id: number, body: string) =>
     handlePromise(
       Contents.create({
         post_id,
-        subtitleid,
+        subtitle_id,
         body,
       }),
     ),
-  findByPostId: (post_id: Number) =>
+
+  findByPostId: (post_id: number) =>
     handlePromise(
       Contents.findAll({
         where: {
@@ -26,7 +27,7 @@ module.exports = {
         updateOnDuplicate: ['id'],
       }),
     ),
-  deleteByPostId: (post_id: Number) =>
+  deleteByPostId: (post_id: number) =>
     handlePromise(
       Contents.destroy({
         where: {
