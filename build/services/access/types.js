@@ -12,4 +12,5 @@ module.exports = {
             id,
         },
     })),
+    findAll: () => handlePromise(Types.findAll()),
 };

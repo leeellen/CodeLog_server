@@ -17,7 +17,7 @@ module.exports = {
             res.status(400).send('It is not email');
         }
         let userResult = yield userService.checkEmail(email);
-        if (userResult.success) {
+        if (!userResult.success) {
             res.status(400).send(`This email has already joined`);
             return;
         }
