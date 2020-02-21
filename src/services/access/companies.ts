@@ -1,7 +1,10 @@
 import { CompanyRecord } from '../../interfaces';
 
-const { Companies } = require('../../database/models');
+const { Companies, Users } = require('../../database/models');
 const handlePromise = require('../helper');
+
+Companies.hasMany(Users, { foreignKey: 'company_id' });
+Users.belongsTo(Companies, { foreignKey: 'company_id' });
 
 module.exports = {
   create: (companyData: CompanyRecord) => handlePromise(Companies.create(companyData)),
@@ -10,6 +13,10 @@ module.exports = {
       Companies.findOne({
         where: {
           id: company_id,
+        },
+        include: {
+          model: Users,
+          attributes: ['email', 'username', 'password', 'position'],
         },
       }),
     ),

@@ -97,6 +97,7 @@ const postingService: PostingServiceType = {
   },
 
   find: async (post_id: number) => {
+    console.log('before find');
     let postRecord: PostingRecord | null = await postings.findById(post_id);
     console.log(postRecord);
 
@@ -273,19 +274,20 @@ const postingService: PostingServiceType = {
 
     let contentDatas = await contents.findByPostId(id);
 
-    for (let [key, value] of Object.entries(content)) {
-      if (contentDatas[key]) {
-        contentDatas[key] = value;
+    console.log(content);
+    for (let element of contentDatas) {
+      if (element.Subtitle.name in content) {
+        element.body = content[element.Subtitle.name];
+        console.log(element);
+        const updateContents = await contents.update(element);
+        if (!updateContents) {
+          return {
+            success: false,
+            payload: null,
+            message: 'fail to update',
+          };
+        }
       }
-    }
-
-    const updateContents = await contents.update(contentDatas);
-    if (!updateContents) {
-      return {
-        success: false,
-        payload: null,
-        message: 'fail to update',
-      };
     }
 
     const updateTitles = await postings.updateTitleById(id, title);
@@ -299,12 +301,14 @@ const postingService: PostingServiceType = {
 
     return {
       success: true,
-      payload: updateContents,
+      payload: null,
       message: 'post updated',
     };
   },
 
   delete: async (post_id: number) => {
+    const deleteTags: undefined = await tags.deleteByPostId(post_id);
+
     const deleteContents: undefined = await contents.deleteByPostId(post_id);
 
     const deleteResult: undefined = await postings.delete(post_id);
@@ -312,6 +316,16 @@ const postingService: PostingServiceType = {
     return {
       success: true,
       payload: deleteResult,
+      message: 'deleted',
+    };
+  },
+
+  test: async (id: number) => {
+    let contentDatas = await contents.findByPostId(id);
+
+    return {
+      success: true,
+      payload: contentDatas,
       message: 'deleted',
     };
   },

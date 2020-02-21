@@ -13,6 +13,14 @@ module.exports = {
         },
       }),
     ),
+  deleteByPostId: (post_id: number) =>
+    handlePromise(
+      postings_tags.destroy({
+        where: {
+          post_id,
+        },
+      }),
+    ),
 
   addAllTags: (tagDatas: Array<PTRecord>) => handlePromise(postings_tags.bulkCreate(tagDatas)),
 };

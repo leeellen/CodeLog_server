@@ -1,7 +1,10 @@
 import { ContentRecord } from '../../interfaces';
 
-const { Contents } = require('../../database/models');
+const { Contents, Subtitles } = require('../../database/models');
 const handlePromise = require('../helper');
+
+Subtitles.hasMany(Contents, { foreignKey: 'subtitle_id' });
+Contents.belongsTo(Subtitles, { foreignKey: 'subtitle_id' });
 
 module.exports = {
   create: (post_id: number, subtitle_id: number, body: string) =>
@@ -19,12 +22,25 @@ module.exports = {
         where: {
           post_id,
         },
+        include: {
+          model: Subtitles,
+          attributes: ['name'],
+        },
       }),
     ),
-  update: (updateDatas: Array<ContentRecord>) =>
+  update: (updateData: ContentRecord) =>
+    handlePromise(
+      Contents.update(updateData, {
+        where: {
+          id: updateData.id,
+        },
+      }),
+    ),
+  updateMany: (updateDatas: Array<ContentRecord>) =>
     handlePromise(
       Contents.bulkCreate(updateDatas, {
-        updateOnDuplicate: ['id'],
+        updateOnDuplicate: ['post_id', 'subtitle_id'],
+        fields: ['id', 'post_id', 'subtitle_id', 'body'],
       }),
     ),
   deleteByPostId: (post_id: number) =>

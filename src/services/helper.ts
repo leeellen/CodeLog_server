@@ -14,6 +14,7 @@ module.exports = async (promise: Promise<any>) => {
     return data;
   } catch (err) {
     console.log(err);
+
     return null;
   }
 };

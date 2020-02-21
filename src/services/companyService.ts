@@ -92,5 +92,23 @@ const CompanyService: CompanyServiceType = {
       message: 'created',
     };
   },
-  mypage: (user_id: number) => {},
+
+  find: async (company_id: number) => {
+    const companyData: CompanyRecord | null = await companies.find(company_id);
+    console.log(companyData);
+    if (!companyData) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find company",
+      };
+    }
+    return {
+      success: true,
+      payload: companyData,
+      message: 'successfully found',
+    };
+  },
 };
+
+module.exports = CompanyService;
