@@ -11,28 +11,26 @@ const { users, companies, postings, types, subtitles, contents } = require('./ac
 const userService = require('./userService');
 const CompanyService = {
     signin: (company_code, emailOrUsername, password) => __awaiter(void 0, void 0, void 0, function* () {
-        let userData;
-        userData = yield users.findByEmail(emailOrUsername);
-        if (!userData) {
-            userData = yield users.findByUsername(emailOrUsername);
-        }
-        if (!userData) {
+        const signinResult = yield userService.signin(emailOrUsername, password);
+        if (!signinResult.success) {
             return {
                 success: false,
                 payload: null,
-                message: 'unvalid user',
+                message: signinResult.message,
             };
         }
-        if (userData.password !== password) {
+        let company_id = signinResult.payload.company_id;
+        const companyData = yield companies.find(company_id);
+        if (companyData.code !== company_code) {
             return {
-                success: true,
+                success: false,
                 payload: null,
-                message: 'wrong password',
+                message: 'wrong code',
             };
         }
         return {
             success: true,
-            payload: userData,
+            payload: null,
             message: 'found user',
         };
     }),

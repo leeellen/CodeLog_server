@@ -3,8 +3,8 @@ module.exports = (sequelize, DataTypes) => {
   const Companies = sequelize.define(
     'Companies',
     {
-      code: DataTypes.STRING,
-      name: DataTypes.STRING,
+      company_code: DataTypes.STRING,
+      company_name: DataTypes.STRING,
       info: DataTypes.TEXT,
       partner: DataTypes.BOOLEAN,
       business_name: DataTypes.STRING,

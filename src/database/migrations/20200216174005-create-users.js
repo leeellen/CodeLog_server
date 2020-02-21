@@ -27,7 +27,7 @@ module.exports = {
           model: 'Companies',
           key: 'id',
         },
-        defaultValue: 1,
+        allowNull: true,
       },
       position: {
         type: Sequelize.STRING,

@@ -8,36 +8,41 @@ import {
   SubtitleRecord,
   ContentRecord,
   UserRecord,
+  Result,
 } from '../interfaces';
 
 const CompanyService: CompanyServiceType = {
   signin: async (company_code: string, emailOrUsername: string, password: string) => {
-    let userData: UserRecord | null;
-
-    userData = await users.findByEmail(emailOrUsername);
-    if (!userData) {
-      userData = await users.findByUsername(emailOrUsername);
-    }
-
-    if (!userData) {
+    const signinResult: Result = await userService.signin(emailOrUsername, password);
+    if (!signinResult.success) {
       return {
         success: false,
         payload: null,
-        message: 'unvalid user',
+        message: signinResult.message,
+      };
+    }
+    let company_id: number = signinResult.payload.company_id;
+    if (!company_id) {
+      return {
+        success: false,
+        payload: null,
+        message: "you don't have company",
       };
     }
 
-    if (userData.password !== password) {
+    const companyData: CompanyRecord = await companies.find(company_id);
+
+    if (companyData.code !== company_code) {
       return {
-        success: true,
+        success: false,
         payload: null,
-        message: 'wrong password',
+        message: 'wrong code',
       };
     }
 
     return {
       success: true,
-      payload: userData,
+      payload: null,
       message: 'found user',
     };
   },
