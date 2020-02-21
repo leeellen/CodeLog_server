@@ -57,7 +57,7 @@ const UserService: UserServiceType = {
     return {
       success: false,
       payload: null,
-      message: userCreate,
+      message: String(userCreate),
     };
   },
 

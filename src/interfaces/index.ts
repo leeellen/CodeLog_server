@@ -64,6 +64,13 @@ export interface UserRecord {
   personal_homepage: string;
 }
 
+export interface PostingOwnerRecord {
+  email: string;
+  username: string;
+  position: string;
+  certificate: string;
+}
+
 export interface PostingRecord {
   id?: number;
   title: string;
@@ -72,6 +79,18 @@ export interface PostingRecord {
   theme: string;
   type_id?: number;
   user_id?: number;
+  owner?: PostingOwnerRecord;
+}
+
+export interface CompanyRecord {
+  id?: number;
+  code: string;
+  name: string;
+  info: string;
+  partner: boolean;
+  business_name: string;
+  eid: string;
+  company_homepage: string;
 }
 
 export interface TILContent {
@@ -116,6 +135,11 @@ export interface ContentRecord {
   body: string;
 }
 
+export interface TagRecord {
+  id: number;
+  name: string;
+}
+
 export interface UserServiceType {
   signin: (emailOrUsername: string, password: string) => Promise<Result>;
   signup: (userRecord: UserRecord) => Promise<Result>;
@@ -132,5 +156,7 @@ export interface PostingServiceType {
   update: (postingData: PostingRecord) => Promise<Result>;
   delete: (post_id: number) => Promise<Result>;
 }
+
+export interface CompanyServiceType {}
 
 export interface TagServiceType {}

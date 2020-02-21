@@ -6,27 +6,17 @@ const { userService, postingService } = require('../../services');
 
 import { Result, Decode, PostingRecord } from '../../interfaces';
 
-interface body {
-  theme: string;
-  title: string;
-  content: string;
-  selected_tags: Array<string>;
-}
-
 module.exports = {
   post: asyncHandler(async (req: Request, res: Response) => {
     const postingData: PostingRecord = req.body;
     const { token } = req.cookies;
 
-    let decode: Decode = await isValid(token);
-    if (!decode.isValid) {
+    const userResult: Result = await userService.findByToken(token);
+    if (!userResult.success) {
       res.status(403).send('login required');
       return;
     }
-    const { email, password } = decode.userData;
-
-    const findUser: Result = await userService.signin(email, password);
-    postingData.userid = findUser.payload.id;
+    postingData.user_id = userResult.payload.id;
 
     const postresult: Result = await postingService.create(postingData);
     if (!postresult.success) {
@@ -53,5 +43,56 @@ module.exports = {
     // }
     // postingInfo['tags'] = tagfindresult.payload;
     res.status(200).send(postingInfo);
+  }),
+  put: asyncHandler(async (req: Request, res: Response) => {
+    const postingData: PostingRecord = req.body;
+    const { token } = req.cookies;
+
+    const userResult: Result = await userService.findByToken(token);
+    if (!userResult.success) {
+      res.status(403).send('login required');
+      return;
+    }
+    postingData.user_id = userResult.payload.id;
+
+    const updateResult: Result = await postingService.update(postingData);
+    if (!updateResult.success) {
+      res.status(404).send("i can't update your postings");
+      return;
+    }
+
+    res.status(201).send('Posting successfully updated!');
+  }),
+  delete: asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.body;
+    const { token } = req.cookies;
+
+    const userResult: Result = await userService.findByToken(token);
+    if (!userResult.success) {
+      res.status(403).send('login required');
+      return;
+    }
+    const user_id = userResult.payload.id;
+    console.log(user_id);
+
+    const postingInfo: Result = await postingService.find(id);
+    if (!postingInfo.success) {
+      res.status(404).send("i can't find your postings");
+      return;
+    }
+
+    if (postingInfo.payload.user_id !== user_id) {
+      console.log(postingInfo.payload);
+      res.status(403).send('It is not your posting');
+      return;
+    }
+
+    const deleteResult: Result = await postingService.delete(id);
+    if (!deleteResult.success) {
+      res.status(404).send("There's an error while deleting your posting");
+      return;
+    }
+
+    res.status(200).send('successfully deleted');
   }),
 };

@@ -1,15 +1,14 @@
-const { postings, types, subtitles, contents } = require('./access');
+const { users, postings, types, subtitles, contents } = require('./access');
 
 import {
   PostingRecord,
   PostingServiceType,
-  TILContent,
-  DevContent,
-  TechContent,
   TypeRecord,
   SubtitleRecord,
   ContentRecord,
+  UserRecord,
 } from '../interfaces';
+import { Certificate } from 'crypto';
 
 const postingService: PostingServiceType = {
   create: async (postingData: PostingRecord) => {
@@ -34,13 +33,13 @@ const postingService: PostingServiceType = {
       };
     }
 
-    const post_id: number = postCreate.id;
+    const post_id: number | undefined = postCreate.id;
 
-    const subtDatas: Array<SubtitleRecord> | null = await subtitles.findByTypeid(typeData.id);
+    const subtDatas: Array<SubtitleRecord> = await subtitles.findByTypeid(typeData.id);
 
     for (let subtitle of subtDatas) {
       const { name, id } = subtitle;
-      const content = postingData.content[name];
+      const content: string = postingData.content[name];
 
       const contentCreate: ContentRecord | null = await contents.create(post_id, id, content);
 
@@ -71,9 +70,10 @@ const postingService: PostingServiceType = {
   },
 
   find: async (post_id: number) => {
-    let findPost: PostingRecord | null = await postings.findById(post_id);
+    let postData: PostingRecord | null = await postings.findById(post_id);
+    console.log(postData);
 
-    if (!findPost) {
+    if (!postData) {
       return {
         success: false,
         payload: null,
@@ -81,32 +81,49 @@ const postingService: PostingServiceType = {
       };
     }
 
-    const typeData: TypeRecord | null = await types.findById(findPost.type_id);
-    findPost.theme = typeData.name;
-
-    const subtDatas: Array<SubtitleRecord> | null = await subtitles.findByTypeid(findPost.type_id);
-
-    const contentDatas: Array<ContentRecord> | null = await contents.findByPostId(findPost.id);
-
-    if (!contentDatas) {
-      return {
-        success: false,
-        payload: null,
-        message: "can't find contents",
+    const userData: UserRecord | null = await users.findById(postData.user_id);
+    if (userData) {
+      postData.owner = {
+        email: userData.email,
+        username: userData.username,
+        position: userData.position,
+        certificate: userData.certificate,
       };
     }
 
-    let content: string | TILContent | DevContent | TechContent = {};
+    const typeData: TypeRecord | null = await types.findById(postData.type_id);
+    if (!typeData) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find type",
+      };
+    }
+    postData.theme = typeData.name;
+
+    const subtDatas: Array<SubtitleRecord> | null = await subtitles.findByTypeid(postData.type_id);
+
+    const contentDatas: Array<ContentRecord> = await contents.findByPostId(postData.id);
+
+    if (contentDatas.length === 0 || !subtDatas) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't put contents",
+      };
+    }
+
+    let content: any = {};
 
     for (let subtitle of subtDatas) {
       const { name, id } = subtitle;
-      content[name] = contentDatas.find((el) => el.subtitle_id === id).body;
+      content[name] = contentDatas.filter((el: ContentRecord) => el.subtitle_id === id)[0].body;
     }
-    findPost.content = content;
+    postData.content = content;
 
     return {
       success: true,
-      payload: findPost,
+      payload: postData,
       message: 'successfully found',
     };
   },
@@ -160,31 +177,46 @@ const postingService: PostingServiceType = {
   },
 
   update: async (postingData: PostingRecord) => {
+    const { id, title, content } = postingData;
+
+    let contentDatas = await contents.findByPostId(id);
+
+    for (let [key, value] of Object.entries(content)) {
+      if (contentDatas[key]) {
+        contentDatas[key] = value;
+      }
+    }
+
+    const updateContents = await contents.update(contentDatas);
+    if (!updateContents) {
+      return {
+        success: false,
+        payload: null,
+        message: 'fail to update',
+      };
+    }
+
+    const updateTitles = await postings.updateTitleById(id, title);
+    if (!updateContents) {
+      return {
+        success: false,
+        payload: null,
+        message: 'fail to update title',
+      };
+    }
+
     return {
-      success: false,
-      payload: null,
-      message: '',
+      success: true,
+      payload: updateContents,
+      message: 'post updated',
     };
   },
 
   delete: async (post_id: number) => {
-    const deleteContents: any = await contents.deleteByPostId(post_id);
-    if (!deleteContents) {
-      return {
-        success: false,
-        payload: null,
-        message: 'error occurred',
-      };
-    }
-    const deleteResult: any = await postings.delete(post_id);
-    console.log(deleteResult);
-    if (!deleteResult) {
-      return {
-        success: false,
-        payload: null,
-        message: 'error occurred',
-      };
-    }
+    const deleteContents: undefined = await contents.deleteByPostId(post_id);
+
+    const deleteResult: undefined = await postings.delete(post_id);
+
     return {
       success: true,
       payload: deleteResult,

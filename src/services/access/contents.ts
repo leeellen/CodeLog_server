@@ -1,3 +1,5 @@
+import { ContentRecord } from '../../interfaces';
+
 const { Contents } = require('../../database/models');
 const handlePromise = require('../helper');
 
@@ -16,6 +18,12 @@ module.exports = {
         where: {
           post_id,
         },
+      }),
+    ),
+  update: (updateDatas: Array<ContentRecord>) =>
+    handlePromise(
+      Contents.bulkCreate(updateDatas, {
+        updateOnDuplicate: ['id'],
       }),
     ),
   deleteByPostId: (post_id: Number) =>

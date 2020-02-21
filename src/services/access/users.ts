@@ -10,7 +10,7 @@ module.exports = {
           email: userData.email,
         },
         defaults: userData,
-      }).spread((result, created) => {
+      }).spread((result: any, created: any) => {
         return created ? 'created' : 'duplicated';
       }),
     ),
@@ -35,6 +35,14 @@ module.exports = {
       Users.findAll({
         where: {
           company_id,
+        },
+      }),
+    ),
+  findById: (id: number) =>
+    handlePromise(
+      Users.findOne({
+        where: {
+          id,
         },
       }),
     ),

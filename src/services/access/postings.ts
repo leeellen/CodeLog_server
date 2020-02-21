@@ -30,13 +30,18 @@ module.exports = {
         },
       }),
     ),
-  update: (postingData: PostingRecord) =>
+  updateTitleById: (id: number, title: string) =>
     handlePromise(
-      Postings.update(postingData, {
-        where: {
-          post_id: postingData.id,
+      Postings.update(
+        {
+          title,
         },
-      }),
+        {
+          where: {
+            id,
+          },
+        },
+      ),
     ),
   delete: (post_id: number) =>
     handlePromise(
@@ -72,7 +77,7 @@ module.exports = {
         },
       ),
     ),
-  getTags: (post_id) =>
+  getTags: (post_id: string) =>
     handlePromise(
       postings_tags.findAll({
         where: {
@@ -80,6 +85,6 @@ module.exports = {
         },
       }),
     ),
-  addTags: (post_id: number, tagids) => handlePromise(postings_tags.bulkCreate(tagids)),
-  deleteTags: (post_id: number, tagids) => handlePromise(postings_tags.bulkDelete(tagids)),
+  addTags: (post_id: number, tagids: any) => handlePromise(postings_tags.bulkCreate(tagids)),
+  deleteTags: (post_id: number, tagids: any) => handlePromise(postings_tags.bulkDelete(tagids)),
 };
