@@ -188,23 +188,6 @@ const postingService: PostingServiceType = {
     };
   },
 
-  findByTheme: async (user_id: number, theme: string) => {
-    let themePostDatas: Array<any> | null = await postings.findByUserTheme(user_id, typeData.id);
-    if (!themePostDatas) {
-      return {
-        success: false,
-        payload: null,
-        message: 'successnot',
-      };
-    }
-
-    return {
-      success: true,
-      payload: themePostDatas,
-      message: 'successfully found',
-    };
-  },
-
   addTags: async (post_id: number, selected_tags: Array<String>) => {
     let tagDatas: Array<PTRecord> = [];
     for (let tag_name of selected_tags) {

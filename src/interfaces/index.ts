@@ -85,8 +85,8 @@ export interface PostingRecord {
 
 export interface CompanyRecord {
   id?: number;
-  code: string;
-  name: string;
+  company_code: string;
+  company_name: string;
   info: string;
   partner: boolean;
   business_name: string;
@@ -160,7 +160,6 @@ export interface PostingServiceType {
   like: (post_id: number) => Promise<Result>;
   unlike: (post_id: number) => Promise<Result>;
   findByUser: (user_id: number) => Promise<Result>;
-  findByTheme: (user_id: number, theme: string) => Promise<Result>;
   getHome: () => Promise<Result>;
   addTags: (post_id: number, selected_tags: Array<string>) => Promise<Result>;
   update: (postingData: PostingRecord) => Promise<Result>;

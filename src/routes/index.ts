@@ -18,6 +18,8 @@ router.post('/signup/company', authController.csignup.post);
 
 router.post('/signin', authController.signin.post);
 
+router.post('/signin/company', authController.csignin.post);
+
 router.post('/signout', authController.signout.post);
 
 router.post('/duplicate', authController.duplicate.post);
