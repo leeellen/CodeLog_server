@@ -38,15 +38,25 @@ router.put('/post', postController.board.put);
 
 router.delete('/post', postController.board.delete);
 
+router.post('/post/update', postController.board.put);
+
+router.post('/post/delete', postController.board.delete);
+
+router.post('/post/delete/:id', postController.boardbyid.delete);
+
 router.get('/post/:id', postController.boardbyid.get);
 
 router.delete('/post/:id', postController.boardbyid.delete);
 
 router.post('/post/like', postController.like.post);
 
-router.delete('/post/like', postController.like.delete);
-
 router.post('/post/like/:id', postController.likebyid.post);
+
+router.post('/post/dislike', postController.like.delete);
+
+router.post('/post/dislike/:id', postController.likebyid.delete);
+
+router.delete('/post/like', postController.like.delete);
 
 router.delete('/post/like/:id', postController.likebyid.delete);
 

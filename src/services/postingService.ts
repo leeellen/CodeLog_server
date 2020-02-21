@@ -83,7 +83,7 @@ const postingService: PostingServiceType = {
 
     const userData: UserRecord | null = await users.findById(postData.user_id);
     if (userData) {
-      postData.owner = {
+      postData.user = {
         email: userData.email,
         username: userData.username,
         position: userData.position,
@@ -128,6 +128,52 @@ const postingService: PostingServiceType = {
     };
   },
 
+  getHome: async () => {},
+
+  findByTheme: async (user_id: number, theme: string) => {
+    const postDatas: Array<PostingRecord> | null = await postings.findByUserTheme(user_id, theme);
+    if (!postDatas) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find posts",
+      };
+    }
+    const typeData: TypeRecord | null = await types.findByName(theme);
+    if (!typeData) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find type",
+      };
+    }
+    const subtDatas: Array<SubtitleRecord> | null = await subtitles.findByTypeid(postData.type_id);
+
+    const contentDatas: Array<ContentRecord> = await contents.findByPostId(postData.id);
+
+    return {
+      success: true,
+      payload: postDatas,
+      message: 'successfully found',
+    };
+  },
+
+  findByUser: async (user_id: number) => {
+    const userPosts: Array<PostingRecord> | null = await postings.findByUser(user_id);
+    if (!userPosts) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find posts",
+      };
+    }
+    return {
+      success: true,
+      payload: userPosts,
+      message: 'all posts found',
+    };
+  },
+
   like: async (post_id: number) => {
     const likeResult: PostingRecord | null = await postings.increaseLike(post_id);
     if (!likeResult) {
@@ -160,22 +206,6 @@ const postingService: PostingServiceType = {
     };
   },
 
-  findByUser: async (user_id: number) => {
-    const userPosts: Array<PostingRecord> | null = await postings.findByUser(user_id);
-    if (!userPosts) {
-      return {
-        success: false,
-        payload: null,
-        message: "can't find posts",
-      };
-    }
-    return {
-      success: true,
-      payload: userPosts,
-      message: 'all posts found',
-    };
-  },
-
   update: async (postingData: PostingRecord) => {
     const { id, title, content } = postingData;
 
@@ -197,7 +227,7 @@ const postingService: PostingServiceType = {
     }
 
     const updateTitles = await postings.updateTitleById(id, title);
-    if (!updateContents) {
+    if (!updateTitles) {
       return {
         success: false,
         payload: null,

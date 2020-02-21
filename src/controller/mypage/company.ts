@@ -4,12 +4,13 @@ import { Request, Response } from 'express';
 const { isValid } = require('../../utils/token');
 const { userService } = require('../../services');
 
-import { Result, Decode } from '../../interfaces';
+import { Result, Decode, UserRecord } from '../../interfaces';
 
 module.exports = {
   get: asyncHandler(async (req: Request, res: Response) => {
     const { token } = req.cookies;
-    const userid: string = userService.findByToken(token);
+
+    const userData: UserRecord = userService.findByToken(token);
 
     const findCompanyResult: Result = await companies.find(companyId);
     if (!findUserResult.success) {

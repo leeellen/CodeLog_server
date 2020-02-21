@@ -8,7 +8,7 @@ module.exports = {
         type_id: 1,
       },
     ];
-    ['til_fact', 'til_feeling', 'til_finding', 'til_futureAction'].map((el) => {
+    ['til_fact', 'til_feeling', 'til_finding', 'til_future_action'].map((el) => {
       demoArr.push({
         name: el,
         type_id: 2,
@@ -19,15 +19,21 @@ module.exports = {
       'tech_background',
       'tech_definition',
       'tech_example',
-      'tech_precautions',
-      'tech_recommend',
+      'tech_precaution',
+      'tech_recommended_concept',
     ].map((el) => {
       demoArr.push({
         name: el,
         type_id: 3,
       });
     });
-    ['dev_concept', 'dev_strategy', 'dev_difficulty', 'dev_reference', 'dev_lesson'].map((el) => {
+    [
+      'dev_project_concept',
+      'dev_coding_strategy',
+      'dev_occurred_error',
+      'dev_reference',
+      'dev_lesson',
+    ].map((el) => {
       demoArr.push({
         name: el,
         type_id: 4,

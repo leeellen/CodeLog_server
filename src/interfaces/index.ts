@@ -64,7 +64,7 @@ export interface UserRecord {
   personal_homepage: string;
 }
 
-export interface PostingOwnerRecord {
+export interface PostingUserRecord {
   email: string;
   username: string;
   position: string;
@@ -79,7 +79,7 @@ export interface PostingRecord {
   theme: string;
   type_id?: number;
   user_id?: number;
-  owner?: PostingOwnerRecord;
+  user?: PostingUserRecord;
 }
 
 export interface CompanyRecord {
