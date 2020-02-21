@@ -1,4 +1,5 @@
-const { postings, types, subtitles, contents } = require('./access');
+const { users, companies, postings, types, subtitles, contents } = require('./access');
+const userService = require('./userService');
 
 import {
   CompanyRecord,
@@ -6,10 +7,11 @@ import {
   TypeRecord,
   SubtitleRecord,
   ContentRecord,
+  UserRecord,
 } from '../interfaces';
 
 const CompanyService: CompanyServiceType = {
-  signin: async (emailOrUsername: string, password: string) => {
+  signin: async (company_code: string, emailOrUsername: string, password: string) => {
     let userData: UserRecord | null;
 
     userData = await users.findByEmail(emailOrUsername);
@@ -40,10 +42,10 @@ const CompanyService: CompanyServiceType = {
     };
   },
 
-  signup: async (userData: UserRecord) => {
-    const userCreate: string | null = await users.create(userData);
+  signup: async (companyData: CompanyRecord) => {
+    const companyCreate: CompanyRecord | null = await companies.create(companyData);
 
-    if (userCreate === 'duplicated') {
+    if (!companyCreate) {
       return {
         success: false,
         payload: null,
@@ -51,18 +53,44 @@ const CompanyService: CompanyServiceType = {
       };
     }
 
-    if (userCreate === 'created') {
+    let member: UserRecord | undefined = companyData.member;
+    if (!companyData.member) {
+      member = {
+        email: '',
+        username: 'admin',
+        password: companyCreate.code,
+        company_id: companyCreate.id,
+        position: '',
+        certificate: '',
+        personal_homepage: '',
+      };
+    } else {
+      member.company_id = companyCreate.id;
+    }
+
+    const memberCreate = userService.signup(member);
+
+    if (!memberCreate.success) {
+      const companyDelete = companies.delete(companyCreate.id);
+      if (!companyDelete) {
+        return {
+          success: true,
+          payload: null,
+          message: "can't join member",
+        };
+      }
       return {
-        success: true,
+        success: false,
         payload: null,
-        message: 'created',
+        message: 'wrong member info',
       };
     }
 
     return {
-      success: false,
+      success: true,
       payload: null,
-      message: String(userCreate),
+      message: 'created',
     };
   },
+  mypage: (user_id: number) => {},
 };

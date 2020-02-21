@@ -9,6 +9,7 @@ import { Result, Decode, PostingRecord } from '../../interfaces';
 module.exports = {
   post: asyncHandler(async (req: Request, res: Response) => {
     const postingData: PostingRecord = req.body;
+    const { selected_tags } = postingData;
     const { token } = req.cookies;
 
     const userResult: Result = await userService.findByToken(token);
@@ -18,13 +19,24 @@ module.exports = {
     }
     postingData.user_id = userResult.payload.id;
 
-    const postresult: Result = await postingService.create(postingData);
-    if (!postresult.success) {
-      res.status(404).send("i can't upload your postings");
+    const postResult: Result = await postingService.create(postingData);
+    if (!postResult.success) {
+      res.status(404).send(postResult.message);
       return;
     }
+    const { id, theme } = postResult.payload;
 
-    res.status(201).send('Posting successfully created!');
+    const tagResult: Result = await postingService.addTags(id, selected_tags);
+    if (!tagResult.success) {
+      res.status(201).send({
+        post_id: id,
+        message: `it successfully created but can't put tags in"}`,
+      });
+    }
+    res.status(201).send({
+      post_id: id,
+      message: `it successfully created!`,
+    });
   }),
   get: asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.body;
