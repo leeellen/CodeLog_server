@@ -1,4 +1,4 @@
-const { Users } = require('../../models');
+const { Users } = require('../../database/models');
 const handlePromise = require('../helper');
 module.exports = {
     create: (userData) => handlePromise(Users.findOrCreate({
@@ -19,21 +19,19 @@ module.exports = {
             username,
         },
     })),
-    findByCompany: (companyid) => handlePromise(Users.findAll({
+    findByCompany: (company_id) => handlePromise(Users.findAll({
         where: {
-            companyid,
+            company_id,
         },
     })),
-    updateByEmail: (email, username, password, companyid, position, completion, website) => handlePromise(Users.update({
-        username,
-        password,
-        companyid,
-        position,
-        completion,
-        website,
-    }, {
+    findById: (id) => handlePromise(Users.findOne({
         where: {
-            email,
+            id,
+        },
+    })),
+    updateByEmail: (userData) => handlePromise(Users.update(userData, {
+        where: {
+            email: userData.email,
         },
     })),
 };

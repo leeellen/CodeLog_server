@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
     const Subtitles = sequelize.define('Subtitles', {
         name: DataTypes.STRING,
-        typeid: DataTypes.INTEGER
+        type_id: DataTypes.INTEGER,
     }, {});
     Subtitles.associate = function (models) {
         // associations can be defined here

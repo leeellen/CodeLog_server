@@ -7,33 +7,205 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const postings = require('./access/postings');
-const PostingService = {
+const { users, postings, types, subtitles, contents } = require('./access');
+const postingService = {
     create: (postingData) => __awaiter(void 0, void 0, void 0, function* () {
-        const createResult = yield postings.create(postingData);
-        if (!createResult) {
+        const typeData = yield types.findByName(postingData.theme);
+        if (!typeData) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't find theme",
+            };
+        }
+        postingData.type_id = typeData.id;
+        const postCreate = yield postings.create(postingData);
+        if (!postCreate) {
             return {
                 success: false,
                 payload: null,
                 message: 'error occurred',
+            };
+        }
+        const post_id = postCreate.id;
+        const subtDatas = yield subtitles.findByTypeid(typeData.id);
+        for (let subtitle of subtDatas) {
+            const { name, id } = subtitle;
+            const content = postingData.content[name];
+            const contentCreate = yield contents.create(post_id, id, content);
+            if (!contentCreate) {
+                const postDelete = yield postings.delete(post_id);
+                if (!postDelete) {
+                    return {
+                        success: false,
+                        payload: null,
+                        message: "can't create content, can't delete post",
+                    };
+                }
+                return {
+                    success: false,
+                    payload: null,
+                    message: "can't create content",
+                };
+            }
+        }
+        return {
+            success: true,
+            payload: postCreate,
+            message: 'created',
+        };
+    }),
+    find: (post_id) => __awaiter(void 0, void 0, void 0, function* () {
+        let postData = yield postings.findById(post_id);
+        console.log(postData);
+        if (!postData) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't find post",
+            };
+        }
+        const userData = yield users.findById(postData.user_id);
+        if (userData) {
+            postData.user = {
+                email: userData.email,
+                username: userData.username,
+                position: userData.position,
+                certificate: userData.certificate,
+            };
+        }
+        const typeData = yield types.findById(postData.type_id);
+        if (!typeData) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't find type",
+            };
+        }
+        postData.theme = typeData.name;
+        const subtDatas = yield subtitles.findByTypeid(postData.type_id);
+        const contentDatas = yield contents.findByPostId(postData.id);
+        if (contentDatas.length === 0 || !subtDatas) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't put contents",
+            };
+        }
+        let content = {};
+        for (let subtitle of subtDatas) {
+            const { name, id } = subtitle;
+            content[name] = contentDatas.filter((el) => el.subtitle_id === id)[0].body;
+        }
+        postData.content = content;
+        return {
+            success: true,
+            payload: postData,
+            message: 'successfully found',
+        };
+    }),
+    getHome: () => __awaiter(void 0, void 0, void 0, function* () { }),
+    findByTheme: (user_id, theme) => __awaiter(void 0, void 0, void 0, function* () {
+        const postDatas = yield postings.findByUserTheme(user_id, theme);
+        if (!postDatas) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't find posts",
             };
         }
         return {
             success: true,
-            payload: createResult,
-            message: 'created',
+            payload: postDatas,
+            message: 'successfully found',
         };
-    }),
-    delete: (postid) => __awaiter(void 0, void 0, void 0, function* () {
-        const deleteResult = yield postings.delete(postid);
-        console.log(deleteResult);
-        if (!deleteResult) {
+        const typeData = yield types.findByName(theme);
+        if (!typeData) {
             return {
                 success: false,
                 payload: null,
-                message: 'error occurred',
+                message: "can't find type",
             };
         }
+    }),
+    findByUser: (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+        const userPosts = yield postings.findByUser(user_id);
+        if (!userPosts) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't find posts",
+            };
+        }
+        return {
+            success: true,
+            payload: userPosts,
+            message: 'all posts found',
+        };
+    }),
+    like: (post_id) => __awaiter(void 0, void 0, void 0, function* () {
+        const likeResult = yield postings.increaseLike(post_id);
+        if (!likeResult) {
+            return {
+                success: false,
+                payload: null,
+                message: "There's an error while like",
+            };
+        }
+        return {
+            success: true,
+            payload: likeResult,
+            message: 'post liked',
+        };
+    }),
+    unlike: (post_id) => __awaiter(void 0, void 0, void 0, function* () {
+        const unLikeResult = yield postings.decreaseLike(post_id);
+        if (!unLikeResult) {
+            return {
+                success: false,
+                payload: null,
+                message: "There's an error while undo like",
+            };
+        }
+        return {
+            success: true,
+            payload: unLikeResult,
+            message: 'post unliked',
+        };
+    }),
+    update: (postingData) => __awaiter(void 0, void 0, void 0, function* () {
+        const { id, title, content } = postingData;
+        let contentDatas = yield contents.findByPostId(id);
+        for (let [key, value] of Object.entries(content)) {
+            if (contentDatas[key]) {
+                contentDatas[key] = value;
+            }
+        }
+        const updateContents = yield contents.update(contentDatas);
+        if (!updateContents) {
+            return {
+                success: false,
+                payload: null,
+                message: 'fail to update',
+            };
+        }
+        const updateTitles = yield postings.updateTitleById(id, title);
+        if (!updateTitles) {
+            return {
+                success: false,
+                payload: null,
+                message: 'fail to update title',
+            };
+        }
+        return {
+            success: true,
+            payload: updateContents,
+            message: 'post updated',
+        };
+    }),
+    delete: (post_id) => __awaiter(void 0, void 0, void 0, function* () {
+        const deleteContents = yield contents.deleteByPostId(post_id);
+        const deleteResult = yield postings.delete(post_id);
         return {
             success: true,
             payload: deleteResult,
@@ -41,4 +213,4 @@ const PostingService = {
         };
     }),
 };
-module.exports = PostingService;
+module.exports = postingService;

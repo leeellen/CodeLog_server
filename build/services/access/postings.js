@@ -1,127 +1,55 @@
-"use strict";
-const { Postings, postings_tags } = require('../../models');
+const { Postings, postings_tags } = require('../../database/models');
 const handlePromise = require('../helper');
 const Sequelize = require('sequelize');
 module.exports = {
     create: (postingData) => handlePromise(Postings.create(postingData)),
-    find: (postid) => handlePromise(Postings.findOne({
+    findById: (post_id) => handlePromise(Postings.findOne({
         where: {
-            id: postid,
+            id: post_id,
         },
     })),
-    findAll: (userid) => handlePromise(Postings.findAll({
+    findByUser: (user_id) => handlePromise(Postings.findAll({
         where: {
-            userid,
+            user_id,
         },
     })),
-    findTheme: (userid, theme) => handlePromise(Postings.findAll({
+    findByUserTheme: (user_id, type_id) => handlePromise(Postings.findAll({
         where: {
-            userid,
-            theme,
+            user_id,
+            type_id,
         },
     })),
-    update: (postid, title, content) => handlePromise(Postings.update({
+    updateTitleById: (id, title) => handlePromise(Postings.update({
         title,
-        content,
     }, {
         where: {
-            id: postid,
+            id,
         },
     })),
-    increaseLike: (postid) => handlePromise(Postings.update({
+    delete: (post_id) => handlePromise(Postings.destroy({
+        where: {
+            id: post_id,
+        },
+    })),
+    increaseLike: (post_id) => handlePromise(Postings.update({
         likes: Sequelize.literal('likes + 1'),
     }, {
         where: {
-            id: postid,
+            id: post_id,
         },
     })),
-    getTags: function (postid) {
-        return postings_tags
-            .findAll({
-            where: {
-                postid,
-            },
-        })
-            .then((result) => {
-            return {
-                success: true,
-                payload: result.map((el) => el.dataValues),
-                message: 'exists',
-            };
-        })
-            .catch((error) => {
-            console.log(error);
-            return {
-                success: false,
-                payload: error.toString(),
-                message: 'not exists',
-            };
-        });
-    },
-    addTags: function (postid, tagids) {
-        tagids = tagids.map((el) => {
-            return { tagid: el, postid };
-        });
-        return postings_tags
-            .bulkCreate(tagids)
-            .then(() => {
-            return {
-                success: true,
-                payload: null,
-                message: 'updated',
-            };
-        })
-            .catch((error) => {
-            console.log(error);
-            return {
-                success: false,
-                payload: error.toString(),
-                message: 'not updated',
-            };
-        });
-    },
-    deleteTags: function (postid, tagids) {
-        tagids = tagids.map((el) => {
-            return { tagid: el, postid };
-        });
-        return postings_tags
-            .bulkDelete(tagids)
-            .then((result) => {
-            return {
-                success: true,
-                payload: null,
-                message: 'deleted',
-            };
-        })
-            .catch((error) => {
-            console.log(error);
-            return {
-                success: false,
-                payload: error.toString(),
-                message: 'not updated',
-            };
-        });
-    },
-    delete: function (postid) {
-        return Postings.destroy({
-            where: {
-                id: postid,
-            },
-        })
-            .then((result) => {
-            console.log(result.dataValues);
-            return {
-                success: true,
-                payload: result.dataValues,
-                message: 'exists',
-            };
-        })
-            .catch((error) => {
-            return {
-                success: false,
-                payload: error.toString(),
-                message: 'not exists',
-            };
-        });
-    },
+    decreaseLike: (post_id) => handlePromise(Postings.update({
+        likes: Sequelize.literal('likes - 1'),
+    }, {
+        where: {
+            id: post_id,
+        },
+    })),
+    getTags: (post_id) => handlePromise(postings_tags.findAll({
+        where: {
+            post_id,
+        },
+    })),
+    addTags: (post_id, tagids) => handlePromise(postings_tags.bulkCreate(tagids)),
+    deleteTags: (post_id, tagids) => handlePromise(postings_tags.bulkDelete(tagids)),
 };

@@ -2,25 +2,25 @@
 module.exports = {
     up: (queryInterface, Sequelize) => {
         let demoArr = [];
-        let theme;
-        for (let i = 0; i < 100; i++) {
+        let type_id;
+        for (let i = 0; i <= 100; i++) {
             if (i < 25) {
-                theme = 'plain';
+                type_id = 1;
             }
             else if (i < 50) {
-                theme = 'til';
+                type_id = 2;
             }
             else if (i < 75) {
-                theme = 'tech';
+                type_id = 3;
             }
             else {
-                theme = 'dev';
+                type_id = 4;
             }
             demoArr.push({
                 title: 'title' + i,
                 likes: Math.floor(Math.random() * 10),
-                theme,
-                userid: Math.floor(Math.random() * 15) + 1,
+                type_id,
+                user_id: Math.floor(Math.random() * 15) + 1,
             });
         }
         return queryInterface.bulkInsert('Postings', demoArr);

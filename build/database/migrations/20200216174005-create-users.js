@@ -21,7 +21,7 @@ module.exports = {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
-            companyid: {
+            company_id: {
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'Companies',
@@ -32,10 +32,10 @@ module.exports = {
             position: {
                 type: Sequelize.STRING,
             },
-            completion: {
+            certificate: {
                 type: Sequelize.STRING,
             },
-            website: {
+            personal_homepage: {
                 type: Sequelize.STRING,
             },
             createdAt: {

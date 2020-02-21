@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const users = require('./access/users');
+const { isValid } = require('../utils/token');
 const UserService = {
     signin: (emailOrUsername, password) => __awaiter(void 0, void 0, void 0, function* () {
         let userData;
@@ -24,7 +25,7 @@ const UserService = {
         }
         if (userData.password !== password) {
             return {
-                success: false,
+                success: true,
                 payload: null,
                 message: 'wrong password',
             };
@@ -44,7 +45,7 @@ const UserService = {
                 message: 'duplicated',
             };
         }
-        else if (userCreate === 'created') {
+        if (userCreate === 'created') {
             return {
                 success: true,
                 payload: null,
@@ -54,7 +55,38 @@ const UserService = {
         return {
             success: false,
             payload: null,
-            message: userCreate,
+            message: String(userCreate),
+        };
+    }),
+    findByToken: (token) => __awaiter(void 0, void 0, void 0, function* () {
+        const decode = yield isValid(token);
+        if (!decode.isValid) {
+            return {
+                success: false,
+                payload: null,
+                message: 'login required',
+            };
+        }
+        const { email, password } = decode.userData;
+        const userData = yield users.findByEmail(email);
+        if (!userData) {
+            return {
+                success: false,
+                payload: null,
+                message: 'unvalid user',
+            };
+        }
+        if (userData.password !== password) {
+            return {
+                success: true,
+                payload: null,
+                message: 'wrong password',
+            };
+        }
+        return {
+            success: true,
+            payload: userData,
+            message: 'id found',
         };
     }),
     checkEmail: (email) => __awaiter(void 0, void 0, void 0, function* () {
@@ -66,13 +98,11 @@ const UserService = {
                 message: 'not duplicated',
             };
         }
-        else {
-            return {
-                success: false,
-                payload: null,
-                message: 'duplicated',
-            };
-        }
+        return {
+            success: false,
+            payload: null,
+            message: 'duplicated',
+        };
     }),
 };
 module.exports = UserService;

@@ -14,18 +14,22 @@ module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { email, username, password } = req.body;
         const emailOrUsername = email || username;
-        let statusCode = 200;
-        let message = '';
         const userData = yield userService.signin(emailOrUsername, password);
         if (!userData.success) {
-            statusCode = 404;
-            message = userData.message;
+            res.status(404).send(`User with ${emailOrUsername} doesn't exist`);
+            return;
         }
-        else {
-            const token = yield tokenGenerator({ id: userData.payload.id });
-            res.cookie('token', token);
-            message = 'Token generated';
+        if (!userData.payload) {
+            res.status(403).send(`wrong password`);
+            return;
         }
-        res.status(statusCode).send(message);
+        const token = yield tokenGenerator({
+            email: userData.payload.email,
+            password: userData.payload.password,
+        });
+        res
+            .cookie('token', token)
+            .status(200)
+            .send('Token generated');
     })),
 };

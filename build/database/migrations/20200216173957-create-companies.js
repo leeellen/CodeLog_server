@@ -21,10 +21,10 @@ module.exports = {
                 type: Sequelize.TEXT,
                 allowNull: true,
             },
-            ispartner: {
+            partner: {
                 type: Sequelize.BOOLEAN,
             },
-            bname: {
+            business_name: {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
@@ -32,7 +32,7 @@ module.exports = {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
-            homepage: {
+            company_homepage: {
                 type: Sequelize.STRING,
             },
             createdAt: {

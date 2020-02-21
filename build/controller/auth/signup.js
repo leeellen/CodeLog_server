@@ -12,21 +12,17 @@ const { userService } = require('../../services');
 module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const userData = req.body;
-        let statusCode = 200;
-        let message = '';
-        const signResult = yield userService.signup(userData);
-        if (!signResult.success) {
-            if (signResult.message === 'duplicated') {
-                statusCode = 409;
-                message = 'User already exists';
+        const result = yield userService.signup(userData);
+        if (!result.success) {
+            if (result.message === 'duplicated') {
+                res.status(409).send('User already exists');
+                return;
             }
             else {
-                statusCode = 500;
+                res.sendStatus(500);
+                return;
             }
         }
-        else {
-            message = 'User successfully created!';
-        }
-        res.status(statusCode).send(message);
+        res.status(200).send('User successfully created!');
     })),
 };

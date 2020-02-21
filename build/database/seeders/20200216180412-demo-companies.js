@@ -5,10 +5,10 @@ module.exports = {
         demoArr.push({
             code: '',
             name: 'independent',
-            ispartner: 0,
-            bname: '',
+            partner: false,
+            business_name: '',
             eid: '',
-            homepage: '',
+            company_homepage: '',
         });
         for (let i = 0; i < 15; i++) {
             if (Math.floor(Math.random() * 2) === 0) {
@@ -16,20 +16,20 @@ module.exports = {
                     code: `${i}`.repeat(9),
                     name: 'company' + i,
                     info: 'it is company info' + i,
-                    ispartner: true,
-                    bname: 'bname' + i,
+                    partner: true,
+                    business_name: 'bname' + i,
                     eid: '999-99-9999' + i,
-                    homepage: `https://company${i}.com/`,
+                    company_homepage: `https://company${i}.com/`,
                 });
             }
             else {
                 demoArr.push({
                     code: null,
                     name: 'company' + i,
-                    ispartner: false,
-                    bname: 'bname' + i,
+                    partner: false,
+                    business_name: 'bname' + i,
                     eid: '999-99-9999' + i,
-                    homepage: `https://company${i}.com/`,
+                    company_homepage: `https://company${i}.com/`,
                 });
             }
         }

@@ -12,23 +12,15 @@ const { userService } = require('../../services');
 module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const email = req.body.email;
-        let statusCode = 200;
-        let message = '';
         const re = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
         if (!re.test(String(email).toLowerCase())) {
-            statusCode = 400;
-            message = 'it is not email';
+            res.status(400).send('It is not email');
         }
-        else {
-            const checkEmail = yield userService.checkEmail(email);
-            if (!checkEmail.success) {
-                statusCode = 409;
-                message = 'already joined';
-            }
-            else {
-                message = `This email is usable!`;
-            }
+        let userResult = yield userService.checkEmail(email);
+        if (userResult.success) {
+            res.status(400).send(`This email has already joined`);
+            return;
         }
-        res.status(statusCode).send(message);
+        res.status(200).send(`This email is usable!`);
     })),
 };
