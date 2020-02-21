@@ -38,6 +38,7 @@ const CompanyService = {
     }),
     signup: (companyData) => __awaiter(void 0, void 0, void 0, function* () {
         const companyCreate = yield companies.create(companyData);
+        console.log('company', companyCreate);
         if (!companyCreate) {
             return {
                 success: false,
@@ -60,7 +61,7 @@ const CompanyService = {
         else {
             member.company_id = companyCreate.id;
         }
-        const memberCreate = userService.signup(member);
+        const memberCreate = yield userService.signup(member);
         if (!memberCreate.success) {
             const companyDelete = companies.delete(companyCreate.id);
             if (!companyDelete) {
@@ -78,8 +79,8 @@ const CompanyService = {
         }
         return {
             success: true,
-            payload: null,
-            message: 'created',
+            payload: companyCreate,
+            message: 'successfully created',
         };
     }),
     find: (company_id) => __awaiter(void 0, void 0, void 0, function* () {

@@ -45,6 +45,7 @@ const CompanyService: CompanyServiceType = {
   signup: async (companyData: CompanyRecord) => {
     const companyCreate: CompanyRecord | null = await companies.create(companyData);
 
+    console.log('company', companyCreate);
     if (!companyCreate) {
       return {
         success: false,
@@ -54,6 +55,7 @@ const CompanyService: CompanyServiceType = {
     }
 
     let member: UserRecord | undefined = companyData.member;
+
     if (!companyData.member) {
       member = {
         email: '',
@@ -68,7 +70,7 @@ const CompanyService: CompanyServiceType = {
       member.company_id = companyCreate.id;
     }
 
-    const memberCreate = userService.signup(member);
+    const memberCreate = await userService.signup(member);
 
     if (!memberCreate.success) {
       const companyDelete = companies.delete(companyCreate.id);
@@ -88,8 +90,8 @@ const CompanyService: CompanyServiceType = {
 
     return {
       success: true,
-      payload: null,
-      message: 'created',
+      payload: companyCreate,
+      message: 'successfully created',
     };
   },
 

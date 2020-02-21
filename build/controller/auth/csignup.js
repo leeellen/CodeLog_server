@@ -8,22 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const asyncHandler = require('express-async-handler');
-const { companies, users } = require('../../services');
+const { companyService } = require('../../services');
 module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { code, coperate_name, ispartner, business_name, eid, homepage, member, } = req.body;
-        const { position, email, username, password } = member;
-        let result = yield companies.create(code, coperate_name, '', ispartner, business_name, eid, homepage);
+        const companyData = req.body;
+        let result = yield companyService.signup(companyData);
         if (!result.success) {
-            res.status(409).send('Company already exists');
+            res.status(409).send(result.message);
             return;
         }
-        const companyid = result.payload.id;
-        const userResult = yield users.create(email, username, password, companyid, position, '', '');
-        if (!userResult.success) {
-            res.status(404).send("There's an error while creating user");
-            return;
-        }
-        res.status(200).send('Company successfully created!');
+        console.log(result.payload);
+        const company_id = result.payload.id;
+        res.status(200).send({
+            company_id,
+            message: 'Company successfully created!',
+        });
     })),
 };
