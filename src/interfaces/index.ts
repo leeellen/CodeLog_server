@@ -75,7 +75,7 @@ export interface PostingRecord {
   id?: number;
   title: string;
   likes?: number;
-  content: string | TILContent | TechContent | DevContent;
+  content: any;
   theme: string;
   type_id?: number;
   user_id?: number;
@@ -165,6 +165,7 @@ export interface PostingServiceType {
   addTags: (post_id: number, selected_tags: Array<string>) => Promise<Result>;
   update: (postingData: PostingRecord) => Promise<Result>;
   delete: (post_id: number) => Promise<Result>;
+  test: (id: number) => Promise<Result>;
 }
 
 export interface CompanyServiceType {}

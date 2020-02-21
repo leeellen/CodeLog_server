@@ -24,9 +24,6 @@ module.exports = {
             return;
         }
         userData.post_count = postingResult.payload.length;
-        userData.post_titles = postingResult.payload
-            .slice(userData.post_count - 10)
-            .map((el) => el.title);
         // let tagNames: Array<string> = [];
         // for (let posting of findPostingsResult.payload) {
         //   let findTagResult: Result = await tags.findNamesByPostId(posting.id);

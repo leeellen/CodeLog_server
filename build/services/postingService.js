@@ -77,6 +77,7 @@ const postingService = {
         };
     }),
     find: (post_id) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log('before find');
         let postRecord = yield postings.findById(post_id);
         console.log(postRecord);
         if (!postRecord) {
@@ -233,18 +234,20 @@ const postingService = {
     update: (postingData) => __awaiter(void 0, void 0, void 0, function* () {
         const { id, title, content } = postingData;
         let contentDatas = yield contents.findByPostId(id);
-        for (let [key, value] of Object.entries(content)) {
-            if (contentDatas[key]) {
-                contentDatas[key] = value;
+        console.log(content);
+        for (let element of contentDatas) {
+            if (element.Subtitle.name in content) {
+                element.body = content[element.Subtitle.name];
+                console.log(element);
+                const updateContents = yield contents.update(element);
+                if (!updateContents) {
+                    return {
+                        success: false,
+                        payload: null,
+                        message: 'fail to update',
+                    };
+                }
             }
-        }
-        const updateContents = yield contents.update(contentDatas);
-        if (!updateContents) {
-            return {
-                success: false,
-                payload: null,
-                message: 'fail to update',
-            };
         }
         const updateTitles = yield postings.updateTitleById(id, title);
         if (!updateTitles) {
@@ -256,16 +259,25 @@ const postingService = {
         }
         return {
             success: true,
-            payload: updateContents,
+            payload: null,
             message: 'post updated',
         };
     }),
     delete: (post_id) => __awaiter(void 0, void 0, void 0, function* () {
+        const deleteTags = yield tags.deleteByPostId(post_id);
         const deleteContents = yield contents.deleteByPostId(post_id);
         const deleteResult = yield postings.delete(post_id);
         return {
             success: true,
             payload: deleteResult,
+            message: 'deleted',
+        };
+    }),
+    test: (id) => __awaiter(void 0, void 0, void 0, function* () {
+        let contentDatas = yield contents.findByPostId(id);
+        return {
+            success: true,
+            payload: contentDatas,
             message: 'deleted',
         };
     }),
