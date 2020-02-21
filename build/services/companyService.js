@@ -20,8 +20,15 @@ const CompanyService = {
             };
         }
         let company_id = signinResult.payload.company_id;
+        if (!company_id) {
+            return {
+                success: false,
+                payload: null,
+                message: "you don't have company",
+            };
+        }
         const companyData = yield companies.find(company_id);
-        if (companyData.code !== company_code) {
+        if (companyData.company_code !== company_code) {
             return {
                 success: false,
                 payload: null,
@@ -30,7 +37,7 @@ const CompanyService = {
         }
         return {
             success: true,
-            payload: null,
+            payload: signinResult.payload,
             message: 'found user',
         };
     }),

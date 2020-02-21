@@ -156,21 +156,6 @@ const postingService = {
             message: 'all posts found',
         };
     }),
-    findByTheme: (user_id, theme) => __awaiter(void 0, void 0, void 0, function* () {
-        let themePostDatas = yield postings.findByUserTheme(user_id, typeData.id);
-        if (!themePostDatas) {
-            return {
-                success: false,
-                payload: null,
-                message: 'successnot',
-            };
-        }
-        return {
-            success: true,
-            payload: themePostDatas,
-            message: 'successfully found',
-        };
-    }),
     addTags: (post_id, selected_tags) => __awaiter(void 0, void 0, void 0, function* () {
         let tagDatas = [];
         for (let tag_name of selected_tags) {
