@@ -18,4 +18,5 @@ module.exports = {
         },
       }),
     ),
+  findAll: () => handlePromise(Types.findAll()),
 };

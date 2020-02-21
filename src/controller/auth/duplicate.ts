@@ -14,7 +14,7 @@ module.exports = {
     }
 
     let userResult: Result = await userService.checkEmail(email);
-    if (userResult.success) {
+    if (!userResult.success) {
       res.status(400).send(`This email has already joined`);
       return;
     }

@@ -8,7 +8,18 @@ import {
   ContentRecord,
   UserRecord,
 } from '../interfaces';
-import { Certificate } from 'crypto';
+
+function handleDatas(newPostDatas: any) {
+  return newPostDatas.map((postData: any) => {
+    let obj: any = {};
+    for (let content of postData.Contents) {
+      obj[content.Subtitle.name] = content.body;
+    }
+    postData.content = obj;
+    delete postData.Contents;
+    return postData;
+  });
+}
 
 const postingService: PostingServiceType = {
   create: async (postingData: PostingRecord) => {
@@ -39,6 +50,7 @@ const postingService: PostingServiceType = {
 
     for (let subtitle of subtDatas) {
       const { name, id } = subtitle;
+      console.log(1000, subtitle, id);
       const content: string = postingData.content[name];
 
       const contentCreate: ContentRecord | null = await contents.create(post_id, id, content);
@@ -128,7 +140,66 @@ const postingService: PostingServiceType = {
     };
   },
 
-  getHome: async () => {},
+  getHome: async () => {
+    let data: any = {};
+    let newPostDatas: Array<any> | null = await postings.findByNew(10);
+    if (!newPostDatas) {
+      return {
+        success: false,
+        payload: null,
+        message: 'successnot',
+      };
+    }
+
+    data.new_post = handleDatas(newPostDatas);
+
+    let ManyLikePostDatas: Array<any> | null = await postings.findByManyLike(10);
+    if (!ManyLikePostDatas) {
+      return {
+        success: false,
+        payload: null,
+        message: 'successnot',
+      };
+    }
+
+    data.recommended_post = handleDatas(ManyLikePostDatas);
+
+    return {
+      success: true,
+      payload: data,
+      message: 'success',
+    };
+  },
+
+  findByUser: async (user_id: number) => {
+    let blogPostDatas: any = {};
+    const typeDatas: Array<TypeRecord> | null = await types.findAll();
+    if (!typeDatas) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find types",
+      };
+    }
+    for (let typeData of typeDatas) {
+      let themePostDatas: Array<any> | null = await postings.findByUserTheme(user_id, typeData.id);
+      if (!themePostDatas) {
+        return {
+          success: false,
+          payload: null,
+          message: 'successnot',
+        };
+      }
+
+      blogPostDatas[typeData.name + '_posts'] = handleDatas(themePostDatas);
+    }
+
+    return {
+      success: true,
+      payload: blogPostDatas,
+      message: 'all posts found',
+    };
+  },
 
   findByTheme: async (user_id: number, theme: string) => {
     const postDatas: Array<PostingRecord> | null = await postings.findByUserTheme(user_id, theme);
@@ -151,26 +222,26 @@ const postingService: PostingServiceType = {
 
     const contentDatas: Array<ContentRecord> = await contents.findByPostId(postData.id);
 
+    if (contentDatas.length === 0 || !subtDatas) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't put contents",
+      };
+    }
+
+    let content: any = {};
+
+    for (let subtitle of subtDatas) {
+      const { name, id } = subtitle;
+      content[name] = contentDatas.filter((el: ContentRecord) => el.subtitle_id === id)[0].body;
+    }
+    postData.content = content;
+
     return {
       success: true,
       payload: postDatas,
       message: 'successfully found',
-    };
-  },
-
-  findByUser: async (user_id: number) => {
-    const userPosts: Array<PostingRecord> | null = await postings.findByUser(user_id);
-    if (!userPosts) {
-      return {
-        success: false,
-        payload: null,
-        message: "can't find posts",
-      };
-    }
-    return {
-      success: true,
-      payload: userPosts,
-      message: 'all posts found',
     };
   },
 

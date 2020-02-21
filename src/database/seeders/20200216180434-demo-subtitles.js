@@ -4,7 +4,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     let demoArr = [
       {
-        name: 'content',
+        name: 'plain_content',
         type_id: 1,
       },
     ];
