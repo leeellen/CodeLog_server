@@ -37,6 +37,7 @@ const UserService: UserServiceType = {
 
   signup: async (userData: UserRecord) => {
     const userCreate: string | null = await users.create(userData);
+    console.log(userCreate);
 
     if (userCreate === 'duplicated') {
       return {
