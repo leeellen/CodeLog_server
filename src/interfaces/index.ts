@@ -8,12 +8,14 @@ export interface Decode {
   isValid: boolean;
   token: string | undefined;
   userData: {
-    id: string;
+    email: string;
+    password: string;
   };
 }
 
 export interface userSignInBody {
-  email: string;
+  email?: string;
+  username?: string;
   password: string;
 }
 
@@ -21,25 +23,140 @@ export interface userSignUpBody {
   email: string;
   username: string;
   password: string;
-  companyid: string;
+  company_id: string;
   position: string;
-  completion: string;
-  website: string;
+  certificate: string;
+  personal_homepage: string;
 }
 
 export interface companyMember {
   position: string;
-  email: string;
-  username: string;
+  email?: string;
+  username?: string;
   password: string;
 }
 
 export interface companySignUpBody {
   code: string;
   coperate_name: string;
-  ispartner: boolean;
+  partner: boolean;
   business_name: string;
   eid: string;
-  homepage: string;
+  company_homepage: string;
   member: companyMember;
 }
+
+export interface companySignInBody {
+  company_code: string;
+  email?: string;
+  username?: string;
+  password: string;
+}
+
+export interface UserRecord {
+  id?: number;
+  email: string;
+  username: string;
+  password: string;
+  company_id: number;
+  position: string;
+  certificate: string;
+  personal_homepage: string;
+}
+
+export interface PostingUserRecord {
+  email: string;
+  username: string;
+  position: string;
+  certificate: string;
+}
+
+export interface PostingRecord {
+  id?: number;
+  title: string;
+  likes: number;
+  content: string | TILContent | TechContent | DevContent;
+  theme: string;
+  type_id?: number;
+  user_id?: number;
+  user?: PostingUserRecord;
+}
+
+export interface CompanyRecord {
+  id?: number;
+  code: string;
+  name: string;
+  info: string;
+  partner: boolean;
+  business_name: string;
+  eid: string;
+  company_homepage: string;
+}
+
+export interface TILContent {
+  fact?: string;
+  feeling?: string;
+  finding?: string;
+  futureAction?: string;
+}
+
+export interface TechContent {
+  concept?: string;
+  background?: string;
+  definition?: string;
+  example?: string;
+  precautions?: string;
+  recommend?: string;
+}
+
+export interface DevContent {
+  concept?: string;
+  strategy?: string;
+  difficulty?: string;
+  reference?: string;
+  lesson?: string;
+}
+
+export interface TypeRecord {
+  id: number;
+  name: string;
+}
+
+export interface SubtitleRecord {
+  id: number;
+  name: string;
+  typeid: number;
+}
+
+export interface ContentRecord {
+  id: number;
+  post_id: number;
+  subtitle_id: number;
+  body: string;
+}
+
+export interface TagRecord {
+  id: number;
+  name: string;
+}
+
+export interface UserServiceType {
+  signin: (emailOrUsername: string, password: string) => Promise<Result>;
+  signup: (userRecord: UserRecord) => Promise<Result>;
+  checkEmail: (email: string) => Promise<Result>;
+  findByToken: (token: string) => Promise<Result>;
+}
+
+export interface PostingServiceType {
+  create: (postingData: PostingRecord) => Promise<Result>;
+  find: (post_id: number) => Promise<Result>;
+  like: (post_id: number) => Promise<Result>;
+  unlike: (post_id: number) => Promise<Result>;
+  findByUser: (user_id: number) => Promise<Result>;
+  update: (postingData: PostingRecord) => Promise<Result>;
+  delete: (post_id: number) => Promise<Result>;
+}
+
+export interface CompanyServiceType {}
+
+export interface TagServiceType {}

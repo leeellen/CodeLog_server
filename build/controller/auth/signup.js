@@ -8,11 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const asyncHandler = require('express-async-handler');
-const { users } = require('../../services');
+const { userService } = require('../../services');
 module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { email, username, password, companyid, position, completion, website, } = req.body;
-        let result = yield users.create(email, username, password, companyid, position, completion, website);
+        const userData = req.body;
+        const result = yield userService.signup(userData);
         if (!result.success) {
             if (result.message === 'duplicated') {
                 res.status(409).send('User already exists');

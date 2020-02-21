@@ -9,25 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const asyncHandler = require('express-async-handler');
 const { isValid } = require('../../utils/token');
-const { companies, users } = require('../../services');
+const { userService } = require('../../services');
 module.exports = {
     get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { token } = req.cookies;
-        let decodeData = yield isValid(token);
-        if (!decodeData.isValid) {
-            res.status(403).send('login required');
-            return;
-        }
-        const userid = decodeData.userData.id;
-        const findUserResult = yield users.findById(userid);
-        if (!findUserResult.success) {
-            res
-                .clearCookie('token')
-                .status(404)
-                .send(`I'm not sure what user you logined to. Hmm. I just do logout for you`);
-            return;
-        }
-        const companyId = findUserResult.payload.companyid;
+        const userData = userService.findByToken(token);
         const findCompanyResult = yield companies.find(companyId);
         if (!findUserResult.success) {
             res.status(404).send(`There's an error while finding your company`);

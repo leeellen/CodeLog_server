@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9,16 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const asyncHandler = require('express-async-handler');
-const { tags } = require('../../services');
+const { tags } = require('../../services/access');
 module.exports = {
     get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const getTagResult = yield tags.getAllTags();
-        if (!getTagResult.success) {
+        if (!getTagResult) {
             res.status(404).send("There's an error while finding tags");
             return;
         }
         res.status(200).send({
-            tags: getTagResult.payload,
+            tags: getTagResult.map((el) => el.name),
         });
     })),
 };

@@ -19,7 +19,7 @@ const isValid = (token) => {
         res({ isValid: false });
       } else {
         const exp = new Date(decode.exp * 1000);
-        const now = Date.now();
+        const now = new Date();
         console.log('exp', exp, 'now', now);
         if (exp < now) {
           res({ isValid: false });

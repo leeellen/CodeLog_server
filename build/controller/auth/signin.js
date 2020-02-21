@@ -9,20 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const asyncHandler = require('express-async-handler');
 const { tokenGenerator } = require('../../utils/token');
-const { users } = require('../../services');
+const { userService } = require('../../services');
 module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { email, password } = req.body;
-        const userData = yield users.find(email, password);
+        const { email, username, password } = req.body;
+        const emailOrUsername = email || username;
+        const userData = yield userService.signin(emailOrUsername, password);
         if (!userData.success) {
-            res.status(404).send(`User with ${email} doesn't exist`);
+            res.status(404).send(`User with ${emailOrUsername} doesn't exist`);
             return;
         }
         if (!userData.payload) {
             res.status(403).send(`wrong password`);
             return;
         }
-        const token = yield tokenGenerator({ id: userData.payload.id });
+        const token = yield tokenGenerator({
+            email: userData.payload.email,
+            password: userData.payload.password,
+        });
         res
             .cookie('token', token)
             .status(200)

@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const { users } = require('../../services');
+const { userService } = require('../../services');
 
 import { Request, Response } from 'express';
 import { Result } from '../../interfaces';
@@ -10,12 +10,12 @@ module.exports = {
 
     const re: RegExp = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     if (!re.test(String(email).toLowerCase())) {
-      res.status(200).send('It is not email');
+      res.status(400).send('It is not email');
     }
 
-    let userResult: Result = await users.find(email, null);
+    let userResult: Result = await userService.checkEmail(email);
     if (userResult.success) {
-      res.status(200).send(`This email has already joined`);
+      res.status(400).send(`This email has already joined`);
       return;
     }
 

@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
-    users: require('./users'),
-    postings: require('./postings'),
-    tags: require('./tags'),
-    companies: require('./companies'),
+    userService: require('./userService'),
+    postingService: require('./postingService'),
+    companyService: require('./companyService'),
+    tagService: require('./tagService'),
 };

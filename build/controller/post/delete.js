@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,30 +9,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const asyncHandler = require('express-async-handler');
 const { isValid } = require('../../utils/token');
-const { postings, tags } = require('../../services');
+const { userService, postingService } = require('../../services');
 module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { id } = req.body;
         const { token } = req.cookies;
-        let decodeData = yield isValid(token);
-        if (!decodeData.isValid) {
+        const userResult = yield userService.findByToken(token);
+        if (!userResult.success) {
             res.status(403).send('login required');
             return;
         }
-        const userid = decodeData.userData.id;
-        let findresult = yield postings.find(id);
-        if (!findresult.success) {
+        const user_id = userResult.payload.id;
+        console.log(user_id);
+        const postingInfo = yield postingService.find(id);
+        if (!postingInfo.success) {
             res.status(404).send("i can't find your postings");
             return;
         }
-        let postingInfo = findresult.payload;
-        if (postingInfo.userid !== userid) {
+        if (postingInfo.payload.user_id !== user_id) {
+            console.log(postingInfo.payload);
             res.status(403).send('It is not your posting');
             return;
         }
-        let deleteResult = yield postings.delete(id);
+        const deleteResult = yield postingService.delete(id);
         if (!deleteResult.success) {
-            res.status(404).send("There's an error while updating your posting");
+            res.status(404).send("There's an error while deleting your posting");
             return;
         }
         res.status(200).send('successfully deleted');
