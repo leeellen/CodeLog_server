@@ -13,6 +13,7 @@ const { userService, postingService } = require('../../services');
 module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const postingData = req.body;
+        const { selected_tags } = postingData;
         const { token } = req.cookies;
         const userResult = yield userService.findByToken(token);
         if (!userResult.success) {
@@ -20,12 +21,23 @@ module.exports = {
             return;
         }
         postingData.user_id = userResult.payload.id;
-        const postresult = yield postingService.create(postingData);
-        if (!postresult.success) {
-            res.status(404).send("i can't upload your postings");
+        const postResult = yield postingService.create(postingData);
+        if (!postResult.success) {
+            res.status(404).send(postResult.message);
             return;
         }
-        res.status(201).send('Posting successfully created!');
+        const { id, theme } = postResult.payload;
+        const tagResult = yield postingService.addTags(id, selected_tags);
+        if (!tagResult.success) {
+            res.status(201).send({
+                post_id: id,
+                message: `it successfully created but can't put tags in"}`,
+            });
+        }
+        res.status(201).send({
+            post_id: id,
+            message: `it successfully created!`,
+        });
     })),
     get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { id } = req.body;

@@ -7,9 +7,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { postings, types, subtitles, contents } = require('./access');
+const { users, companies, postings, types, subtitles, contents } = require('./access');
+const userService = require('./userService');
 const CompanyService = {
-    signin: (emailOrUsername, password) => __awaiter(void 0, void 0, void 0, function* () {
+    signin: (company_code, emailOrUsername, password) => __awaiter(void 0, void 0, void 0, function* () {
         let userData;
         userData = yield users.findByEmail(emailOrUsername);
         if (!userData) {
@@ -35,26 +36,51 @@ const CompanyService = {
             message: 'found user',
         };
     }),
-    signup: (userData) => __awaiter(void 0, void 0, void 0, function* () {
-        const userCreate = yield users.create(userData);
-        if (userCreate === 'duplicated') {
+    signup: (companyData) => __awaiter(void 0, void 0, void 0, function* () {
+        const companyCreate = yield companies.create(companyData);
+        if (!companyCreate) {
             return {
                 success: false,
                 payload: null,
                 message: 'duplicated',
             };
         }
-        if (userCreate === 'created') {
+        let member = companyData.member;
+        if (!companyData.member) {
+            member = {
+                email: '',
+                username: 'admin',
+                password: companyCreate.code,
+                company_id: companyCreate.id,
+                position: '',
+                certificate: '',
+                personal_homepage: '',
+            };
+        }
+        else {
+            member.company_id = companyCreate.id;
+        }
+        const memberCreate = userService.signup(member);
+        if (!memberCreate.success) {
+            const companyDelete = companies.delete(companyCreate.id);
+            if (!companyDelete) {
+                return {
+                    success: true,
+                    payload: null,
+                    message: "can't join member",
+                };
+            }
             return {
-                success: true,
+                success: false,
                 payload: null,
-                message: 'created',
+                message: 'wrong member info',
             };
         }
         return {
-            success: false,
+            success: true,
             payload: null,
-            message: String(userCreate),
+            message: 'created',
         };
     }),
+    mypage: (user_id) => { },
 };

@@ -7,17 +7,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { users, postings, types, subtitles, contents } = require('./access');
-function handleDatas(newPostDatas) {
-    return newPostDatas.map((postData) => {
-        let obj = {};
-        for (let content of postData.Contents) {
-            obj[content.Subtitle.name] = content.body;
-        }
-        postData.content = obj;
-        delete postData.Contents;
-        return postData;
-    });
+const { users, postings, types, subtitles, contents, tags } = require('./access');
+function handleData(postData) {
+    postData.theme = postData.Type.name;
+    delete postData.Type;
+    let cobj = {};
+    for (let content of postData.Contents) {
+        cobj[content.Subtitle.name] = content.body;
+    }
+    postData.content = cobj;
+    delete postData.Contents;
+    let tagArr = [];
+    for (let ptcon of postData.postings_tags) {
+        tagArr.push(ptcon.Tag.name);
+    }
+    postData.selected_tags = tagArr;
+    delete postData.postings_tags;
+    return postData;
+}
+function handleDatas(postDatas) {
+    return postDatas.map((postData) => handleData(postData));
 }
 const postingService = {
     create: (postingData) => __awaiter(void 0, void 0, void 0, function* () {
@@ -68,15 +77,16 @@ const postingService = {
         };
     }),
     find: (post_id) => __awaiter(void 0, void 0, void 0, function* () {
-        let postData = yield postings.findById(post_id);
-        console.log(postData);
-        if (!postData) {
+        let postRecord = yield postings.findById(post_id);
+        console.log(postRecord);
+        if (!postRecord) {
             return {
                 success: false,
                 payload: null,
                 message: "can't find post",
             };
         }
+        let postData = handleData(postRecord);
         const userData = yield users.findById(postData.user_id);
         if (userData) {
             postData.user = {
@@ -86,30 +96,6 @@ const postingService = {
                 certificate: userData.certificate,
             };
         }
-        const typeData = yield types.findById(postData.type_id);
-        if (!typeData) {
-            return {
-                success: false,
-                payload: null,
-                message: "can't find type",
-            };
-        }
-        postData.theme = typeData.name;
-        const subtDatas = yield subtitles.findByTypeid(postData.type_id);
-        const contentDatas = yield contents.findByPostId(postData.id);
-        if (contentDatas.length === 0 || !subtDatas) {
-            return {
-                success: false,
-                payload: null,
-                message: "can't put contents",
-            };
-        }
-        let content = {};
-        for (let subtitle of subtDatas) {
-            const { name, id } = subtitle;
-            content[name] = contentDatas.filter((el) => el.subtitle_id === id)[0].body;
-        }
-        postData.content = content;
         return {
             success: true,
             payload: postData,
@@ -170,41 +156,48 @@ const postingService = {
         };
     }),
     findByTheme: (user_id, theme) => __awaiter(void 0, void 0, void 0, function* () {
-        const postDatas = yield postings.findByUserTheme(user_id, theme);
-        if (!postDatas) {
+        let themePostDatas = yield postings.findByUserTheme(user_id, typeData.id);
+        if (!themePostDatas) {
             return {
                 success: false,
                 payload: null,
-                message: "can't find posts",
+                message: 'successnot',
             };
         }
-        const typeData = yield types.findByName(theme);
-        if (!typeData) {
-            return {
-                success: false,
-                payload: null,
-                message: "can't find type",
-            };
-        }
-        const subtDatas = yield subtitles.findByTypeid(postData.type_id);
-        const contentDatas = yield contents.findByPostId(postData.id);
-        if (contentDatas.length === 0 || !subtDatas) {
-            return {
-                success: false,
-                payload: null,
-                message: "can't put contents",
-            };
-        }
-        let content = {};
-        for (let subtitle of subtDatas) {
-            const { name, id } = subtitle;
-            content[name] = contentDatas.filter((el) => el.subtitle_id === id)[0].body;
-        }
-        postData.content = content;
         return {
             success: true,
-            payload: postDatas,
+            payload: themePostDatas,
             message: 'successfully found',
+        };
+    }),
+    addTags: (post_id, selected_tags) => __awaiter(void 0, void 0, void 0, function* () {
+        let tagDatas = [];
+        for (let tag_name of selected_tags) {
+            const findTag = yield tags.findByName(tag_name);
+            if (!findTag) {
+                return {
+                    success: false,
+                    payload: null,
+                    message: "can't find tag",
+                };
+            }
+            tagDatas.push({
+                post_id,
+                tag_id: findTag.id,
+            });
+        }
+        const addTag = yield tags.addAllTags(tagDatas);
+        if (!addTag) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't put tags in",
+            };
+        }
+        return {
+            success: true,
+            payload: null,
+            message: 'successfully taged',
         };
     }),
     like: (post_id) => __awaiter(void 0, void 0, void 0, function* () {

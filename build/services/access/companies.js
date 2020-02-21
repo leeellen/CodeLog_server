@@ -1,21 +1,15 @@
-"use strict";
 const { Companies } = require('../../database/models');
 const handlePromise = require('../helper');
 module.exports = {
-    create: (code, name, info, partner, business_name, eid, company_homepage) => handlePromise(Companies.create({
-        code,
-        name,
-        info,
-        partner,
-        business_name,
-        eid,
-        company_homepage,
-    })),
+    create: (companyData) => handlePromise(Companies.create(companyData)),
     find: (company_id) => handlePromise(Companies.findOne({
         where: {
             id: company_id,
         },
     })),
-    changeUser: function (companyid, userid) { },
-    deleteUser: function (companyid, userid) { },
+    delete: (company_id) => handlePromise(Companies.destroy({
+        where: {
+            id: company_id,
+        },
+    })),
 };
