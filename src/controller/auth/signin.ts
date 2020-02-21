@@ -8,7 +8,7 @@ import { Result, userSignInBody } from '../../interfaces';
 module.exports = {
   post: asyncHandler(async (req: Request, res: Response) => {
     const { email, username, password } = req.body as userSignInBody;
-    const emailOrUsername: string | null = email || username;
+    const emailOrUsername: string | undefined = email || username;
 
     const userData: Result = await userService.signin(emailOrUsername, password);
 

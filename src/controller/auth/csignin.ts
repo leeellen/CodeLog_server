@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const { tokenGenerator } = require('../../utils/token');
-const { users, companies } = require('../../services');
+const { companyService } = require('../../services');
 
 import { Request, Response } from 'express';
 import { Result, companySignInBody } from '../../interfaces';
@@ -8,28 +8,23 @@ import { Result, companySignInBody } from '../../interfaces';
 module.exports = {
   post: asyncHandler(async (req: Request, res: Response) => {
     const { company_code, email, username, password } = req.body as companySignInBody;
+    const emailOrUsername: string | undefined = email || username;
 
-    const userData: Result = await users.find(email, password);
-    if (!userData.success) {
-      res.status(404).send(`User with ${email} doesn't exist`);
-      return;
-    }
-    if (!userData.payload) {
-      res.status(403).send(`wrong password`);
-      return;
-    }
+    const signinResult: Result = await companyService.signin(
+      company_code,
+      emailOrUsername,
+      password,
+    );
 
-    const companyData: Result = await companies.find(userData.payload.companyid);
-    if (!companyData.success) {
-      res.status(404).send(`User doesn't have company`);
-      return;
-    }
-    if (company_code !== companyData.payload.code) {
-      res.status(403).send(`companycode doesn't match`);
+    if (!signinResult.success) {
+      res.status(404).send(signinResult.message);
       return;
     }
 
-    const token: string = await tokenGenerator({ id: userData.payload.id });
+    const token: string = await tokenGenerator({
+      email: signinResult.payload.email,
+      password: signinResult.payload.password,
+    });
 
     res
       .cookie('token', token)

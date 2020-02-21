@@ -32,7 +32,7 @@ const CompanyService: CompanyServiceType = {
 
     const companyData: CompanyRecord = await companies.find(company_id);
 
-    if (companyData.code !== company_code) {
+    if (companyData.company_code !== company_code) {
       return {
         success: false,
         payload: null,
@@ -42,7 +42,7 @@ const CompanyService: CompanyServiceType = {
 
     return {
       success: true,
-      payload: null,
+      payload: signinResult.payload,
       message: 'found user',
     };
   },

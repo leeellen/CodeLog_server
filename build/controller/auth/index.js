@@ -5,4 +5,5 @@ module.exports = {
     signup: require('./signup'),
     duplicate: require('./duplicate'),
     csignup: require('./csignup'),
+    csignin: require('./csignin'),
 };
