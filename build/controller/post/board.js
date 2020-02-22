@@ -41,18 +41,24 @@ module.exports = {
     })),
     get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { id } = req.body;
+        const { token } = req.cookies;
         const findresult = yield postingService.find(id);
         if (!findresult.success) {
             res.status(404).send("i can't find your postings");
             return;
         }
         let postingInfo = findresult.payload;
-        // let tagfindresult: Result = await tags.findNamesByPostId(id);
-        // if (!tagfindresult.success) {
-        //   res.status(404).send("i found your postings, but i can't find posting tags");
-        //   return;
-        // }
-        // postingInfo['tags'] = tagfindresult.payload;
+        if (token) {
+            const decode = yield isValid(token);
+            if (!decode.isValid) {
+                return {
+                    success: false,
+                    payload: null,
+                    message: 'login required',
+                };
+            }
+            const { email, password } = decode.userData;
+        }
         res.status(200).send(postingInfo);
     })),
     put: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -64,20 +70,15 @@ module.exports = {
             return;
         }
         const user_id = userResult.payload.id;
-        console.log(user_id);
-        const postingInfo = yield postingService.find(postingData.id);
-        if (!postingInfo.success) {
-            res.status(404).send("i can't find your postings");
-            return;
-        }
-        if (postingInfo.payload.user_id !== user_id) {
-            console.log(postingInfo.payload);
-            res.status(403).send('It is not your posting');
-            return;
-        }
-        const updateResult = yield postingService.update(postingData);
+        const updateResult = yield postingService.update(user_id, postingData);
         if (!updateResult.success) {
-            res.status(404).send("i can't update your postings");
+            res.status(404).send(updateResult.message);
+            return;
+        }
+        const { id, selected_tags } = postingData;
+        const addTagResult = yield postingService.addTags(id, selected_tags);
+        if (!addTagResult.success) {
+            res.status(404).send(addTagResult.message);
             return;
         }
         res.status(201).send('Posting successfully updated!');
@@ -91,7 +92,6 @@ module.exports = {
             return;
         }
         const user_id = userResult.payload.id;
-        console.log(user_id);
         const postingInfo = yield postingService.find(id);
         if (!postingInfo.success) {
             res.status(404).send("i can't find your postings");

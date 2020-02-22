@@ -11,7 +11,11 @@ const asyncHandler = require('express-async-handler');
 const { postingService } = require('../../services');
 module.exports = {
     get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        let posts = yield postingService.getHome();
-        res.status(200).send(posts.payload);
+        let homeResult = yield postingService.getHome();
+        if (!homeResult.success) {
+            res.status(404).send(homeResult.message);
+            return;
+        }
+        res.status(200).send(homeResult.payload);
     })),
 };

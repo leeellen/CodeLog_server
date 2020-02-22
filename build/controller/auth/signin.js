@@ -30,6 +30,6 @@ module.exports = {
         res
             .cookie('token', token)
             .status(200)
-            .send('Token generated');
+            .send({ token });
     })),
 };

@@ -10,6 +10,7 @@ module.exports = {
             },
             company_code: {
                 type: Sequelize.STRING,
+                allowNull: false,
                 defaultValue: '',
             },
             company_name: {
