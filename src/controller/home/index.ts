@@ -16,10 +16,6 @@ module.exports = {
     let homeData = homeResult.payload;
 
     const userResult: Result = await userService.findByToken(token);
-    if (!userResult.success) {
-      res.status(403).send('login required');
-      return;
-    }
 
     if (userResult.payload.company_id) {
       homeData.isCompanyUser = true;
