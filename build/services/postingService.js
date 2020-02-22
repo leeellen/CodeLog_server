@@ -145,7 +145,7 @@ const postingService = {
                 return {
                     success: false,
                     payload: null,
-                    message: 'successnot',
+                    message: "can't find post",
                 };
             }
             blogPostDatas[typeData.name + '_posts'] = handleDatas(themePostDatas);
