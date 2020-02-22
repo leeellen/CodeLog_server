@@ -20,6 +20,14 @@ module.exports = {
         },
       }),
     ),
+  findByNew: (num: number) =>
+    handlePromise(
+      Companies.findAll({
+        limit: num,
+        order: [['id', 'DESC']],
+        attributes: ['company_name', 'info', 'partner', 'company_homepage'],
+      }),
+    ),
   update: (companyData: CompanyRecord) =>
     handlePromise(
       Companies.update(companyData, {
