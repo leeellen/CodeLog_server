@@ -6,6 +6,7 @@ const {
   postController,
   blogController,
   mypageController,
+  companyController,
   tagController,
   homeController,
   verify,
@@ -27,13 +28,15 @@ router.post('/duplicate', authController.duplicate.post);
 
 // * MYPAGE
 
-router.get('/mypage', mypageController.developer.get);
+router.get('/mypage', mypageController.get);
 
-router.put('/mypage', mypageController.developer.put);
+router.put('/mypage', mypageController.put);
 
-router.post('/mypage/update', mypageController.developer.put);
+router.post('/mypage/update', mypageController.put);
 
-router.get('/mypage/company', mypageController.company.get);
+// * COMPANY
+
+router.get('/company', companyController.get);
 
 // * POST
 
@@ -85,6 +88,6 @@ router.get('/home', homeController.get);
 
 router.get('/auth/token', verify.get);
 
-router.post('/auth/user', verify.post);
+router.get('/auth/user', verify.post);
 
 module.exports = router;
