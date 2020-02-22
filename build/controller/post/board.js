@@ -48,16 +48,11 @@ module.exports = {
             return;
         }
         let postingInfo = findresult.payload;
-        if (token) {
-            const decode = yield isValid(token);
-            if (!decode.isValid) {
-                return {
-                    success: false,
-                    payload: null,
-                    message: 'login required',
-                };
-            }
-            const { email, password } = decode.userData;
+        const userResult = yield userService.findByToken(token);
+        console.log(userResult);
+        if (userResult.success) {
+            const user_id = userResult.payload.id;
+            postingInfo.isAuthor = postingInfo.user_id === user_id;
         }
         res.status(200).send(postingInfo);
     })),

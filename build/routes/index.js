@@ -1,7 +1,7 @@
 "use strict";
 var express = require('express');
 var router = express.Router();
-const { authController, postController, blogController, mypageController, tagController, homeController, } = require('../controller');
+const { authController, postController, blogController, mypageController, tagController, homeController, verify, } = require('../controller');
 // * AUTH
 router.post('/signup', authController.signup.post);
 router.post('/signup/company', authController.csignup.post);
@@ -35,4 +35,7 @@ router.get('/blog', blogController.main.get);
 router.get('/tags', tagController.get);
 // * HOME
 router.get('/home', homeController.get);
+// * VERIFY
+router.get('/verify', verify.get);
+router.post('/verify', verify.post);
 module.exports = router;
