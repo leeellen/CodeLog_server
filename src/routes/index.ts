@@ -86,8 +86,8 @@ router.get('/home', homeController.get);
 
 // * VERIFY
 
-router.get('/auth/token', verify.get);
+router.get('/auth', verify.get);
 
-router.get('/auth/user', verify.post);
+router.post('/auth', verify.post);
 
 module.exports = router;
