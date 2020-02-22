@@ -59,6 +59,13 @@ const UserService = {
             message: String(userCreate),
         };
     }),
+    update: (userRecord) => __awaiter(void 0, void 0, void 0, function* () {
+        return {
+            success: true,
+            payload: null,
+            message: '',
+        };
+    }),
     findByToken: (token) => __awaiter(void 0, void 0, void 0, function* () {
         const decode = yield isValid(token);
         if (!decode.isValid) {
