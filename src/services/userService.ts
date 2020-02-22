@@ -74,7 +74,7 @@ const UserService: UserServiceType = {
 
     return {
       success: true,
-      payload: null,
+      payload: updateRecord,
       message: 'successfully update user',
     };
   },
