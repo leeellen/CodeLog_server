@@ -11,20 +11,10 @@ const asyncHandler = require('express-async-handler');
 const { userService, postingService } = require('../../services');
 module.exports = {
     get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { token } = req.cookies;
         const homeResult = yield postingService.getHome();
         if (!homeResult.success) {
             res.status(404).send(homeResult.message);
             return;
-        }
-        let homeData = homeResult.payload;
-        const userResult = yield userService.findByToken(token);
-        if (!userResult.success) {
-            res.status(403).send('login required');
-            return;
-        }
-        if (userResult.payload.company_id) {
-            homeData.isCompanyUser = true;
         }
         res.status(200).send(homeResult.payload);
     })),
