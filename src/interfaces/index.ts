@@ -81,6 +81,7 @@ export interface PostingRecord {
   user_id?: number;
   user?: PostingUserRecord;
   selected_tags?: Array<string> | Array<TagRecord>;
+  isAuthor?: boolean;
 }
 
 export interface CompanyRecord {

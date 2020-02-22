@@ -47,18 +47,14 @@ module.exports = {
       res.status(404).send("i can't find your postings");
       return;
     }
-    let postingInfo: Object = findresult.payload;
+    let postingInfo: PostingRecord = findresult.payload;
 
-    if (token) {
-      const decode: Decode = await isValid(token);
-      if (!decode.isValid) {
-        return {
-          success: false,
-          payload: null,
-          message: 'login required',
-        };
-      }
-      const { email, password } = decode.userData;
+    const userResult: Result = await userService.findByToken(token);
+    console.log(userResult);
+
+    if (userResult.success) {
+      const user_id = userResult.payload.id;
+      postingInfo.isAuthor = postingInfo.user_id === user_id;
     }
 
     res.status(200).send(postingInfo);

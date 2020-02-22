@@ -8,6 +8,7 @@ const {
   mypageController,
   tagController,
   homeController,
+  verify,
 } = require('../controller');
 
 // * AUTH
@@ -75,5 +76,11 @@ router.get('/tags', tagController.get);
 // * HOME
 
 router.get('/home', homeController.get);
+
+// * VERIFY
+
+router.get('/verify', verify.get);
+
+router.post('/verify', verify.post);
 
 module.exports = router;

@@ -6,4 +6,5 @@ module.exports = {
     mypageController: require('./mypage'),
     tagController: require('./tags'),
     homeController: require('./home'),
+    verify: require('./verify'),
 };
