@@ -29,6 +29,10 @@ router.post('/duplicate', authController.duplicate.post);
 
 router.get('/mypage', mypageController.developer.get);
 
+router.put('/mypage', mypageController.developer.put);
+
+router.post('/mypage/update', mypageController.developer.put);
+
 router.get('/mypage/company', mypageController.company.get);
 
 // * POST
@@ -79,8 +83,8 @@ router.get('/home', homeController.get);
 
 // * VERIFY
 
-router.get('/verify', verify.get);
+router.get('/auth/token', verify.get);
 
-router.post('/verify', verify.post);
+router.post('/auth/user', verify.post);
 
 module.exports = router;

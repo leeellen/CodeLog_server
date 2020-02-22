@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 import { Request, Response } from 'express';
 const { userService, postingService } = require('../../services');
 
-import { Result, PostingRecord } from '../../interfaces';
+import { Result, PostingRecord, UserRecord } from '../../interfaces';
 
 module.exports = {
   get: asyncHandler(async (req: Request, res: Response) => {
@@ -42,5 +42,30 @@ module.exports = {
     userData.tags = tags;
 
     res.status(200).send(userData);
+  }),
+
+  put: asyncHandler(async (req: Request, res: Response) => {
+    const userUpdateData: UserRecord = req.body;
+    const { token } = req.cookies;
+
+    const userResult: Result = await userService.findByToken(token);
+    if (!userResult.success) {
+      res.status(403).send('login required');
+      return;
+    }
+    let userData = userResult.payload;
+
+    if (userUpdateData.email !== userData.email) {
+      res.status(404).send("can't update email");
+      return;
+    }
+
+    const userUpdateResult: Result = await userService.update(userUpdateData);
+    if (!userUpdateResult.success) {
+      res.status(404).send(userUpdateResult.message);
+      return;
+    }
+
+    res.status(200).send(userUpdateResult.payload);
   }),
 };

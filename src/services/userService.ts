@@ -63,10 +63,19 @@ const UserService: UserServiceType = {
   },
 
   update: async (userRecord: UserRecord) => {
+    const updateRecord: UserRecord | null = await users.updateByEmail(userRecord);
+    if (!updateRecord) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't update user",
+      };
+    }
+
     return {
       success: true,
       payload: null,
-      message: '',
+      message: 'successfully update user',
     };
   },
 
@@ -93,7 +102,7 @@ const UserService: UserServiceType = {
 
     if (userData.password !== password) {
       return {
-        success: true,
+        success: false,
         payload: null,
         message: 'wrong password',
       };

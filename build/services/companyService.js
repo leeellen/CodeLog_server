@@ -103,5 +103,20 @@ const CompanyService = {
             message: 'successfully found',
         };
     }),
+    update: (user_id, companyData) => __awaiter(void 0, void 0, void 0, function* () {
+        const updateRecord = yield companies.updateByEmail(companyData);
+        if (!updateRecord) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't update company",
+            };
+        }
+        return {
+            success: true,
+            payload: null,
+            message: 'successfully update company',
+        };
+    }),
 };
 module.exports = CompanyService;

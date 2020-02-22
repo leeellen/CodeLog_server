@@ -18,7 +18,7 @@ module.exports = {
         if (userResult.success) {
             isLogin = true;
         }
-        res.status(200).send({ isLogin });
+        res.status(200).send({ token: isLogin });
     })),
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { token } = req.cookies;

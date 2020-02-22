@@ -60,10 +60,18 @@ const UserService = {
         };
     }),
     update: (userRecord) => __awaiter(void 0, void 0, void 0, function* () {
+        const updateRecord = yield users.updateByEmail(userRecord);
+        if (!updateRecord) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't update user",
+            };
+        }
         return {
             success: true,
             payload: null,
-            message: '',
+            message: 'successfully update user',
         };
     }),
     findByToken: (token) => __awaiter(void 0, void 0, void 0, function* () {
@@ -86,7 +94,7 @@ const UserService = {
         }
         if (userData.password !== password) {
             return {
-                success: true,
+                success: false,
                 payload: null,
                 message: 'wrong password',
             };
