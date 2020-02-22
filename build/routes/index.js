@@ -39,6 +39,6 @@ router.get('/tags', tagController.get);
 // * HOME
 router.get('/home', homeController.get);
 // * VERIFY
-router.get('/auth/token', verify.get);
-router.get('/auth/user', verify.post);
+router.get('/auth', verify.get);
+router.post('/auth', verify.post);
 module.exports = router;
