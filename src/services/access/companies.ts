@@ -20,6 +20,14 @@ module.exports = {
         },
       }),
     ),
+  update: (companyData: CompanyRecord) =>
+    handlePromise(
+      Companies.update(companyData, {
+        where: {
+          company_code: companyData.company_code,
+        },
+      }),
+    ),
   delete: (company_id: number) =>
     handlePromise(
       Companies.destroy({

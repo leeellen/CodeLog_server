@@ -116,6 +116,23 @@ const CompanyService: CompanyServiceType = {
       message: 'successfully found',
     };
   },
+
+  update: async (user_id: number, companyData: CompanyRecord) => {
+    const updateRecord: CompanyRecord | null = await companies.updateByEmail(companyData);
+    if (!updateRecord) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't update company",
+      };
+    }
+
+    return {
+      success: true,
+      payload: null,
+      message: 'successfully update company',
+    };
+  },
 };
 
 module.exports = CompanyService;
