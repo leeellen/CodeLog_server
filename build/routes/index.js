@@ -1,7 +1,7 @@
 "use strict";
 var express = require('express');
 var router = express.Router();
-const { authController, postController, blogController, mypageController, tagController, homeController, verify, } = require('../controller');
+const { authController, postController, blogController, mypageController, companyController, tagController, homeController, verify, } = require('../controller');
 // * AUTH
 router.post('/signup', authController.signup.post);
 router.post('/signup/company', authController.csignup.post);
@@ -10,10 +10,11 @@ router.post('/signin/company', authController.csignin.post);
 router.post('/signout', authController.signout.post);
 router.post('/duplicate', authController.duplicate.post);
 // * MYPAGE
-router.get('/mypage', mypageController.developer.get);
-router.put('/mypage', mypageController.developer.put);
-router.post('/mypage/update', mypageController.developer.put);
-router.get('/mypage/company', mypageController.company.get);
+router.get('/mypage', mypageController.get);
+router.put('/mypage', mypageController.put);
+router.post('/mypage/update', mypageController.put);
+// * COMPANY
+router.get('/company', companyController.get);
 // * POST
 router.post('/post', postController.board.post);
 router.post('/test', postController.board.test);
@@ -39,5 +40,5 @@ router.get('/tags', tagController.get);
 router.get('/home', homeController.get);
 // * VERIFY
 router.get('/auth/token', verify.get);
-router.post('/auth/user', verify.post);
+router.get('/auth/user', verify.post);
 module.exports = router;

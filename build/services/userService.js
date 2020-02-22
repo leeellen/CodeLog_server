@@ -70,7 +70,7 @@ const UserService = {
         }
         return {
             success: true,
-            payload: null,
+            payload: updateRecord,
             message: 'successfully update user',
         };
     }),
