@@ -40,6 +40,7 @@ module.exports = {
   }),
   get: asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.body;
+    const { token } = req.cookies;
 
     const findresult: Result = await postingService.find(id);
     if (!findresult.success) {
@@ -48,12 +49,18 @@ module.exports = {
     }
     let postingInfo: Object = findresult.payload;
 
-    // let tagfindresult: Result = await tags.findNamesByPostId(id);
-    // if (!tagfindresult.success) {
-    //   res.status(404).send("i found your postings, but i can't find posting tags");
-    //   return;
-    // }
-    // postingInfo['tags'] = tagfindresult.payload;
+    if (token) {
+      const decode: Decode = await isValid(token);
+      if (!decode.isValid) {
+        return {
+          success: false,
+          payload: null,
+          message: 'login required',
+        };
+      }
+      const { email, password } = decode.userData;
+    }
+
     res.status(200).send(postingInfo);
   }),
   put: asyncHandler(async (req: Request, res: Response) => {
@@ -66,23 +73,18 @@ module.exports = {
       return;
     }
     const user_id = userResult.payload.id;
-    console.log(user_id);
 
-    const postingInfo: Result = await postingService.find(postingData.id);
-    if (!postingInfo.success) {
-      res.status(404).send("i can't find your postings");
-      return;
-    }
-
-    if (postingInfo.payload.user_id !== user_id) {
-      console.log(postingInfo.payload);
-      res.status(403).send('It is not your posting');
-      return;
-    }
-
-    const updateResult: Result = await postingService.update(postingData);
+    const updateResult: Result = await postingService.update(user_id, postingData);
     if (!updateResult.success) {
-      res.status(404).send("i can't update your postings");
+      res.status(404).send(updateResult.message);
+      return;
+    }
+
+    const { id, selected_tags } = postingData;
+
+    const addTagResult: Result = await postingService.addTags(id, selected_tags);
+    if (!addTagResult.success) {
+      res.status(404).send(addTagResult.message);
       return;
     }
 
@@ -98,7 +100,6 @@ module.exports = {
       return;
     }
     const user_id = userResult.payload.id;
-    console.log(user_id);
 
     const postingInfo: Result = await postingService.find(id);
     if (!postingInfo.success) {

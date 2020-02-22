@@ -216,14 +216,34 @@ const postingService = {
             message: 'post unliked',
         };
     }),
-    update: (postingData) => __awaiter(void 0, void 0, void 0, function* () {
+    update: (user_id, postingData) => __awaiter(void 0, void 0, void 0, function* () {
         const { id, title, content } = postingData;
-        let contentDatas = yield contents.findByPostId(id);
-        console.log(content);
+        const postData = yield postings.findById(id);
+        if (!postData) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't find post",
+            };
+        }
+        if (postData.user_id !== user_id) {
+            return {
+                success: false,
+                payload: null,
+                message: 'it is not your post',
+            };
+        }
+        const contentDatas = yield contents.findByPostId(id);
+        if (!contentDatas) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't find content",
+            };
+        }
         for (let element of contentDatas) {
             if (element.Subtitle.name in content) {
                 element.body = content[element.Subtitle.name];
-                console.log(element);
                 const updateContents = yield contents.update(element);
                 if (!updateContents) {
                     return {
@@ -234,6 +254,7 @@ const postingService = {
                 }
             }
         }
+        const deleteTags = yield tags.deleteByPostId(id);
         const updateTitles = yield postings.updateTitleById(id, title);
         if (!updateTitles) {
             return {

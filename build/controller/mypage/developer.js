@@ -20,10 +20,14 @@ module.exports = {
         let userData = userResult.payload;
         const postingResult = yield postingService.findByUser(userData.id);
         if (!postingResult.success) {
-            res.status(404).send('posting not found');
+            res.status(404).send(postingResult.message);
             return;
         }
-        userData.post_count = postingResult.payload.length;
+        let post_count = 0;
+        let tags = {};
+        for (let [key, value] of Object.entries(postingResult.payload)) {
+            post_count += value.length;
+        }
         // let tagNames: Array<string> = [];
         // for (let posting of findPostingsResult.payload) {
         //   let findTagResult: Result = await tags.findNamesByPostId(posting.id);

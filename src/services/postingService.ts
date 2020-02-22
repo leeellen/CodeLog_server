@@ -170,6 +170,7 @@ const postingService: PostingServiceType = {
     }
     for (let typeData of typeDatas) {
       let themePostDatas: Array<any> | null = await postings.findByUserTheme(user_id, typeData.id);
+
       if (!themePostDatas) {
         return {
           success: false,
@@ -252,17 +253,41 @@ const postingService: PostingServiceType = {
     };
   },
 
-  update: async (postingData: PostingRecord) => {
+  update: async (user_id: number, postingData: PostingRecord) => {
     const { id, title, content } = postingData;
 
-    let contentDatas = await contents.findByPostId(id);
+    const postData = await postings.findById(id);
+    if (!postData) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find post",
+      };
+    }
 
-    console.log(content);
+    if (postData.user_id !== user_id) {
+      return {
+        success: false,
+        payload: null,
+        message: 'it is not your post',
+      };
+    }
+
+    const contentDatas = await contents.findByPostId(id);
+    if (!contentDatas) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find content",
+      };
+    }
+
     for (let element of contentDatas) {
       if (element.Subtitle.name in content) {
         element.body = content[element.Subtitle.name];
-        console.log(element);
+
         const updateContents = await contents.update(element);
+
         if (!updateContents) {
           return {
             success: false,
@@ -272,6 +297,8 @@ const postingService: PostingServiceType = {
         }
       }
     }
+
+    const deleteTags: undefined = await tags.deleteByPostId(id);
 
     const updateTitles = await postings.updateTitleById(id, title);
     if (!updateTitles) {

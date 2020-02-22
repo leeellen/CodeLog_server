@@ -16,7 +16,7 @@ module.exports = {
             }
             else {
                 demoArr.push({
-                    company_code: null,
+                    company_code: '',
                     company_name: 'company' + i,
                     partner: false,
                     business_name: 'bname' + i,

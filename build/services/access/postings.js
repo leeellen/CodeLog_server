@@ -47,7 +47,10 @@ module.exports = {
             user_id,
             type_id,
         },
-        order: Sequelize.literal('id DESC'),
+        order: [
+            ['id', 'DESC'],
+            [postings_tags, 'tag_id', 'ASC'],
+        ],
         attributes: { exclude: ['type_id', 'user_id'] },
         include: [
             {
@@ -74,7 +77,10 @@ module.exports = {
     })),
     findByNew: (num) => handlePromise(Postings.findAll({
         limit: num,
-        order: Sequelize.literal('id DESC'),
+        order: [
+            ['id', 'DESC'],
+            [postings_tags, 'tag_id', 'ASC'],
+        ],
         attributes: { exclude: ['type_id', 'user_id'] },
         include: [
             {
