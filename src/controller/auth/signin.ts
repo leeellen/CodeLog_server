@@ -27,9 +27,15 @@ module.exports = {
       password: userData.payload.password,
     });
 
+    let resBody: any = { message: 'Token generated' };
+
+    if (userData.payload.company_id) {
+      resBody.isCompanyUser = true;
+    }
+
     res
       .cookie('token', token)
       .status(200)
-      .send({ token });
+      .send(resBody);
   }),
 };

@@ -61,18 +61,18 @@ const CompanyService: CompanyServiceType = {
 
     let member: UserRecord | undefined = companyData.member;
 
-    if (!companyData.member) {
+    if (!member) {
       member = {
         email: '',
         username: 'admin',
-        password: companyCreate.code,
-        company_id: companyCreate.id,
+        password: companyCreate.company_code,
+        company_id: companyCreate.id || null,
         position: '',
         certificate: '',
         personal_homepage: '',
       };
     } else {
-      member.company_id = companyCreate.id;
+      member.company_id = companyCreate.id || null;
     }
 
     const memberCreate = await userService.signup(member);
@@ -102,7 +102,7 @@ const CompanyService: CompanyServiceType = {
 
   find: async (company_id: number) => {
     const companyData: CompanyRecord | null = await companies.find(company_id);
-    console.log(companyData);
+
     if (!companyData) {
       return {
         success: false,

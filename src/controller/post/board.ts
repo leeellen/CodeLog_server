@@ -49,11 +49,14 @@ module.exports = {
     }
     let postingInfo: PostingRecord = findresult.payload;
 
-    const userResult: Result = await userService.findByToken(token);
-    console.log(userResult);
-
-    if (userResult.success) {
+    if (token) {
+      const userResult: Result = await userService.findByToken(token);
+      if (!userResult.success) {
+        res.status(403).send('login required');
+        return;
+      }
       const user_id = userResult.payload.id;
+
       postingInfo.isAuthor = postingInfo.user_id === user_id;
     }
 
@@ -111,7 +114,7 @@ module.exports = {
 
     const deleteResult: Result = await postingService.delete(id);
     if (!deleteResult.success) {
-      res.status(404).send("There's an error while deleting your posting");
+      res.status(404).send(deleteResult.message);
       return;
     }
 
