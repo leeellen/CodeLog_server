@@ -18,6 +18,7 @@ module.exports = {
         where: {
             id: post_id,
         },
+        order: [[postings_tags, 'tag_id', 'ASC']],
         attributes: { exclude: ['type_id'] },
         include: [
             {

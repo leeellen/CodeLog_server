@@ -52,19 +52,19 @@ const CompanyService = {
             };
         }
         let member = companyData.member;
-        if (!companyData.member) {
+        if (!member) {
             member = {
                 email: '',
                 username: 'admin',
-                password: companyCreate.code,
-                company_id: companyCreate.id,
+                password: companyCreate.company_code,
+                company_id: companyCreate.id || null,
                 position: '',
                 certificate: '',
                 personal_homepage: '',
             };
         }
         else {
-            member.company_id = companyCreate.id;
+            member.company_id = companyCreate.id || null;
         }
         const memberCreate = yield userService.signup(member);
         if (!memberCreate.success) {
@@ -90,7 +90,6 @@ const CompanyService = {
     }),
     find: (company_id) => __awaiter(void 0, void 0, void 0, function* () {
         const companyData = yield companies.find(company_id);
-        console.log(companyData);
         if (!companyData) {
             return {
                 success: false,

@@ -62,6 +62,14 @@ const UserService: UserServiceType = {
     };
   },
 
+  update: async (userRecord: UserRecord) => {
+    return {
+      success: true,
+      payload: null,
+      message: '',
+    };
+  },
+
   findByToken: async (token: string) => {
     const decode: Decode = await isValid(token);
     if (!decode.isValid) {

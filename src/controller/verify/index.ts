@@ -30,6 +30,10 @@ module.exports = {
       delete userData.password;
     }
 
-    res.status(200).send({ userData });
+    if (userData) {
+      res.status(200).send({ userData });
+    } else {
+      res.status(200).send({ isLogin: false });
+    }
   }),
 };

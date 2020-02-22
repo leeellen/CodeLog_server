@@ -58,7 +58,7 @@ export interface UserRecord {
   email: string;
   username: string;
   password: string;
-  company_id: number;
+  company_id: number | null;
   position: string;
   certificate: string;
   personal_homepage: string;
@@ -151,6 +151,7 @@ export interface TagRecord {
 export interface UserServiceType {
   signin: (emailOrUsername: string, password: string) => Promise<Result>;
   signup: (userRecord: UserRecord) => Promise<Result>;
+  update: (userRecord: UserRecord) => Promise<Result>;
   checkEmail: (email: string) => Promise<Result>;
   findByToken: (token: string) => Promise<Result>;
 }
