@@ -13,6 +13,11 @@ module.exports = {
             attributes: ['email', 'username', 'password', 'position'],
         },
     })),
+    update: (companyData) => handlePromise(Companies.update(companyData, {
+        where: {
+            company_code: companyData.company_code,
+        },
+    })),
     delete: (company_id) => handlePromise(Companies.destroy({
         where: {
             id: company_id,

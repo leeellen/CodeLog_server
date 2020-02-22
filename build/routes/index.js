@@ -11,6 +11,8 @@ router.post('/signout', authController.signout.post);
 router.post('/duplicate', authController.duplicate.post);
 // * MYPAGE
 router.get('/mypage', mypageController.developer.get);
+router.put('/mypage', mypageController.developer.put);
+router.post('/mypage/update', mypageController.developer.put);
 router.get('/mypage/company', mypageController.company.get);
 // * POST
 router.post('/post', postController.board.post);
@@ -36,6 +38,6 @@ router.get('/tags', tagController.get);
 // * HOME
 router.get('/home', homeController.get);
 // * VERIFY
-router.get('/verify', verify.get);
-router.post('/verify', verify.post);
+router.get('/auth/token', verify.get);
+router.post('/auth/user', verify.post);
 module.exports = router;

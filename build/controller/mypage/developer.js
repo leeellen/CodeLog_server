@@ -42,4 +42,24 @@ module.exports = {
         userData.tags = tags;
         res.status(200).send(userData);
     })),
+    put: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const userUpdateData = req.body;
+        const { token } = req.cookies;
+        const userResult = yield userService.findByToken(token);
+        if (!userResult.success) {
+            res.status(403).send('login required');
+            return;
+        }
+        let userData = userResult.payload;
+        if (userUpdateData.email !== userData.email) {
+            res.status(404).send("can't update email");
+            return;
+        }
+        const userUpdateResult = yield userService.update(userUpdateData);
+        if (!userUpdateResult.success) {
+            res.status(404).send(userUpdateResult.message);
+            return;
+        }
+        res.status(200).send(userUpdateResult.payload);
+    })),
 };
