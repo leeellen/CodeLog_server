@@ -13,6 +13,11 @@ module.exports = {
             attributes: ['email', 'username', 'password', 'position'],
         },
     })),
+    findByNew: (num) => handlePromise(Companies.findAll({
+        limit: num,
+        order: [['id', 'DESC']],
+        attributes: ['company_name', 'info', 'partner', 'company_homepage'],
+    })),
     update: (companyData) => handlePromise(Companies.update(companyData, {
         where: {
             company_code: companyData.company_code,
