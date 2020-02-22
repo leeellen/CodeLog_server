@@ -1,4 +1,4 @@
-const { users, postings, types, subtitles, contents, tags } = require('./access');
+const { users, companies, postings, types, subtitles, contents, tags } = require('./access');
 
 import {
   PostingRecord,
@@ -134,7 +134,7 @@ const postingService: PostingServiceType = {
       return {
         success: false,
         payload: null,
-        message: 'successnot',
+        message: "can't find new posts",
       };
     }
 
@@ -145,11 +145,22 @@ const postingService: PostingServiceType = {
       return {
         success: false,
         payload: null,
-        message: 'successnot',
+        message: "can't find recommended posts",
       };
     }
 
     data.recommended_post = handleDatas(ManyLikePostDatas);
+
+    let newCompanies: Array<any> | null = await companies.findByNew(10);
+    if (!newCompanies) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find companies",
+      };
+    }
+
+    data.new_companies = newCompanies;
 
     return {
       success: true,
