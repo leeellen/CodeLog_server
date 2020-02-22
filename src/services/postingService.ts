@@ -175,7 +175,7 @@ const postingService: PostingServiceType = {
         return {
           success: false,
           payload: null,
-          message: 'successnot',
+          message: "can't find post",
         };
       }
 

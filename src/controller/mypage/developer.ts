@@ -21,21 +21,25 @@ module.exports = {
       res.status(404).send(postingResult.message);
       return;
     }
+
     let post_count: number = 0;
-    let tags: Object = {};
-    for (let [key, value] of Object.entries(postingResult.payload)) {
-      post_count += value.length;
+    let tags: any = {};
+    let themePosts: any;
+
+    for (themePosts of Object.values(postingResult.payload)) {
+      post_count += themePosts.length;
+      themePosts.map((themePost: any) => {
+        if (themePost.selected_tags.length !== 0) {
+          themePost.selected_tags.map((el: string) => {
+            tags[el] = 1;
+          });
+        }
+      });
     }
-    // let tagNames: Array<string> = [];
-    // for (let posting of findPostingsResult.payload) {
-    //   let findTagResult: Result = await tags.findNamesByPostId(posting.id);
-    //   if (!findTagResult.success) {
-    //     res.status(404).send(`There's an error while finding your posting tags`);
-    //     return;
-    //   }
-    //   tagNames = tagNames.concat(findTagResult.payload);
-    // }
-    // userData['tags'] = tagNames.filter((v, i) => tagNames.indexOf(v) === i);
+    tags = Object.keys(tags);
+    userData.post_count = post_count;
+    userData.tag_count = tags.length;
+    userData.tags = tags;
 
     res.status(200).send(userData);
   }),
