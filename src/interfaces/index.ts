@@ -162,7 +162,7 @@ export interface PostingServiceType {
   findByUser: (user_id: number) => Promise<Result>;
   getHome: () => Promise<Result>;
   addTags: (post_id: number, selected_tags: Array<string>) => Promise<Result>;
-  update: (postingData: PostingRecord) => Promise<Result>;
+  update: (user_id: number, postingData: PostingRecord) => Promise<Result>;
   delete: (post_id: number) => Promise<Result>;
   test: (id: number) => Promise<Result>;
 }

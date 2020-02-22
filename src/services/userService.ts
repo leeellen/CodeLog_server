@@ -73,11 +73,7 @@ const UserService: UserServiceType = {
     }
     const { email, password } = decode.userData;
 
-    console.log('before finding user');
-
     const userData: UserRecord | null = await users.findByEmail(email);
-
-    console.log('after finding user', userData);
 
     if (!userData) {
       return {
