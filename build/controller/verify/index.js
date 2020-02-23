@@ -8,20 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const asyncHandler = require('express-async-handler');
+const { isValid } = require('../../utils/token');
 const { userService } = require('../../services');
 module.exports = {
     get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { token } = req.cookies;
         let resBody = {
             token: false,
-            join_type: 'developer',
         };
-        const userResult = yield userService.findByToken(token);
-        if (userResult.success) {
+        const decode = yield isValid(token);
+        if (decode.isValid) {
             resBody.token = true;
-        }
-        if (userResult.payload.company_id) {
-            resBody.join_type = 'company';
+            resBody.join_type = decode.userData.user_type;
         }
         res.status(200).send(resBody);
     })),

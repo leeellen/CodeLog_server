@@ -1,6 +1,7 @@
-import { Result, UserRecord } from '../../interfaces';
+import { Result, UserRecord, Decode } from '../../interfaces';
 
 const asyncHandler = require('express-async-handler');
+const { isValid } = require('../../utils/token');
 
 import { Request, Response } from 'express';
 const { userService } = require('../../services');
@@ -11,15 +12,13 @@ module.exports = {
 
     let resBody: any = {
       token: false,
-      join_type: 'developer',
     };
 
-    const userResult: Result = await userService.findByToken(token);
-    if (userResult.success) {
+    const decode: Decode = await isValid(token);
+    if (decode.isValid) {
       resBody.token = true;
-    }
-    if (userResult.payload.company_id) {
-      resBody.join_type = 'company';
+
+      resBody.join_type = decode.userData.user_type;
     }
 
     res.status(200).send(resBody);

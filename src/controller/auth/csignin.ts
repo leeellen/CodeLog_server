@@ -24,6 +24,7 @@ module.exports = {
     const token: string = await tokenGenerator({
       email: signinResult.payload.email,
       password: signinResult.payload.password,
+      user_type: 'company',
     });
 
     res

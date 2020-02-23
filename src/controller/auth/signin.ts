@@ -25,6 +25,7 @@ module.exports = {
     const token: string = await tokenGenerator({
       email: userData.payload.email,
       password: userData.payload.password,
+      user_type: 'developer',
     });
 
     let resBody: any = { message: 'Token generated' };
