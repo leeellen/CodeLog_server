@@ -158,6 +158,8 @@ export interface UserServiceType {
   signin: (emailOrUsername: string, password: string) => Promise<Result>;
   signup: (userRecord: UserRecord) => Promise<Result>;
   update: (userRecord: UserRecord) => Promise<Result>;
+  updatebyId: (userRecord: UserRecord) => Promise<Result>;
+  delete: (id: number) => Promise<Result>;
   checkEmail: (email: string) => Promise<Result>;
   findByToken: (token: string) => Promise<Result>;
 }
@@ -167,6 +169,7 @@ export interface PostingServiceType {
   find: (post_id: number) => Promise<Result>;
   like: (post_id: number) => Promise<Result>;
   unlike: (post_id: number) => Promise<Result>;
+  findBlog: (user_id: number) => Promise<Result>;
   findByUser: (user_id: number) => Promise<Result>;
   getHome: () => Promise<Result>;
   addTags: (post_id: number, selected_tags: Array<string>) => Promise<Result>;

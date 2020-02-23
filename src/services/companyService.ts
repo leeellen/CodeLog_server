@@ -103,7 +103,7 @@ const CompanyService: CompanyServiceType = {
   },
 
   find: async (company_id: number) => {
-    const companyData: CompanyRecord | null = await companies.find(company_id);
+    const companyData = await companies.find(company_id);
 
     if (!companyData) {
       return {
@@ -112,6 +112,7 @@ const CompanyService: CompanyServiceType = {
         message: "can't find company",
       };
     }
+
     return {
       success: true,
       payload: handleCompanyData(companyData),
@@ -120,7 +121,6 @@ const CompanyService: CompanyServiceType = {
   },
 
   update: async (companyData: CompanyRecord) => {
-    console.log(companyData);
     const companyRecord: CompanyRecord | null = await companies.find(companyData.id);
     if (!companyRecord) {
       return {
@@ -130,15 +130,15 @@ const CompanyService: CompanyServiceType = {
       };
     }
 
-    if (
-      companyRecord.company_code !== companyData.company_code ||
-      companyRecord.partner !== companyData.partner
-    ) {
-      return {
-        success: false,
-        payload: null,
-        message: "can't update code or partner",
-      };
+    const { company_code, partner } = companyData;
+    if (company_code || partner) {
+      if (companyRecord.company_code !== company_code || companyRecord.partner !== partner) {
+        return {
+          success: false,
+          payload: null,
+          message: "can't update code or partner",
+        };
+      }
     }
 
     const updateRecord: CompanyRecord | null = await companies.update(companyData);

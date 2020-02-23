@@ -15,7 +15,7 @@ module.exports = {
     }
     let userData = userResult.payload;
 
-    let blogPostDatas: any = await postingService.findByUser(userData.id);
+    let blogPostDatas: any = await postingService.findBlog(userData.id);
 
     res.status(200).send(blogPostDatas.payload);
   }),

@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 import { Request, Response } from 'express';
 const { userService, postingService } = require('../../services');
 
-import { Result, PostingRecord, UserRecord } from '../../interfaces';
+import { Result, UserRecord } from '../../interfaces';
 
 module.exports = {
   get: asyncHandler(async (req: Request, res: Response) => {
@@ -16,7 +16,7 @@ module.exports = {
     }
     let userData = userResult.payload;
 
-    const postingResult: Result = await postingService.findByUser(userData.id);
+    const postingResult: Result = await postingService.findBlog(userData.id);
     if (!postingResult.success) {
       res.status(404).send(postingResult.message);
       return;

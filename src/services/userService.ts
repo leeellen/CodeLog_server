@@ -1,5 +1,6 @@
 const users = require('./access/users');
 const { isValid } = require('../utils/token');
+const postingService = require('./postingService');
 
 import { UserRecord, UserServiceType, Decode } from '../interfaces';
 
@@ -79,6 +80,23 @@ const UserService: UserServiceType = {
     };
   },
 
+  updatebyId: async (userRecord: UserRecord) => {
+    const updateRecord: UserRecord | null = await users.updateById(userRecord);
+    if (!updateRecord) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't update user",
+      };
+    }
+
+    return {
+      success: true,
+      payload: updateRecord,
+      message: 'successfully update user',
+    };
+  },
+
   findByToken: async (token: string) => {
     const decode: Decode = await isValid(token);
     if (!decode.isValid) {
@@ -130,6 +148,36 @@ const UserService: UserServiceType = {
       success: false,
       payload: null,
       message: 'duplicated',
+    };
+  },
+
+  delete: async (user_id: number) => {
+    const userPostResult = await postingService.findByUser(user_id);
+    if (!userPostResult.success) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find posts",
+      };
+    }
+
+    for (let userPost of userPostResult.payload) {
+      const deletePostResult = await postingService.delete(userPost.id);
+      if (!deletePostResult.success) {
+        return {
+          success: false,
+          payload: null,
+          message: "can't delete post",
+        };
+      }
+    }
+
+    const deleteResult: undefined = await users.delete(user_id);
+
+    return {
+      success: true,
+      payload: null,
+      message: 'deleted',
     };
   },
 };

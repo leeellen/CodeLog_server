@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 
-const { userService, postingService } = require('../../services');
+const { postingService } = require('../../services');
 
 import { Request, Response } from 'express';
 import { Result } from '../../interfaces';

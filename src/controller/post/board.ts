@@ -1,10 +1,9 @@
 const asyncHandler = require('express-async-handler');
 
 import { Request, Response } from 'express';
-const { isValid } = require('../../utils/token');
 const { userService, postingService } = require('../../services');
 
-import { Result, Decode, PostingRecord } from '../../interfaces';
+import { Result, PostingRecord } from '../../interfaces';
 
 module.exports = {
   post: asyncHandler(async (req: Request, res: Response) => {

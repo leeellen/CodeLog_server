@@ -8,17 +8,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const asyncHandler = require('express-async-handler');
-const { userService, postingService } = require('../../services');
+const { userService, companyService } = require('../../services');
 module.exports = {
-    get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    delete: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { token } = req.cookies;
+        const id = req.params.id;
         const userResult = yield userService.findByToken(token);
         if (!userResult.success) {
             res.status(403).send('login required');
             return;
         }
-        let userData = userResult.payload;
-        let blogPostDatas = yield postingService.findBlog(userData.id);
-        res.status(200).send(blogPostDatas.payload);
+        const findCompanyResult = yield companyService.find(userResult.payload.company_id);
+        if (!findCompanyResult.success) {
+            res.status(404).send(`There's an error while finding your company`);
+            return;
+        }
+        if (userResult.payload.company_id === findCompanyResult.payload.id) {
+            const userDeleteResult = yield userService.delete(id);
+            if (!userDeleteResult.success) {
+                res.status(404).send(userDeleteResult.message);
+                return;
+            }
+        }
+        else {
+            res.status(404).send('it is not your company');
+            return;
+        }
+        res.status(200).send('Member successfully deleted');
     })),
 };

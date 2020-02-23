@@ -54,4 +54,20 @@ module.exports = {
         },
       }),
     ),
+  updateById: (userData: UserRecord) =>
+    handlePromise(
+      Users.update(userData, {
+        where: {
+          id: userData.id,
+        },
+      }),
+    ),
+  delete: (user_id: number) =>
+    handlePromise(
+      Users.destroy({
+        where: {
+          id: user_id,
+        },
+      }),
+    ),
 };

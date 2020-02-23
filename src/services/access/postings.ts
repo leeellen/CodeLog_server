@@ -63,6 +63,44 @@ module.exports = {
         ],
       }),
     ),
+  findByUser: (user_id: number) =>
+    handlePromise(
+      Postings.findAll({
+        where: {
+          user_id,
+        },
+        order: [
+          ['id', 'DESC'],
+          [postings_tags, 'tag_id', 'ASC'],
+        ],
+        attributes: { exclude: ['type_id', 'user_id'] },
+        include: [
+          {
+            model: Types,
+            attributes: ['name'],
+          },
+          {
+            model: Contents,
+            attributes: ['body', 'subtitle_id'],
+            include: {
+              model: Subtitles,
+              attributes: ['name'],
+            },
+          },
+          {
+            model: postings_tags,
+            attributes: ['tag_id'],
+            include: {
+              model: Tags,
+              where: {
+                type: 'stack',
+              },
+              attributes: ['name'],
+            },
+          },
+        ],
+      }),
+    ),
   findByUserTheme: (user_id: number, type_id: number) =>
     handlePromise(
       Postings.findAll({

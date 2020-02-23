@@ -19,6 +19,12 @@ module.exports = {
             return;
         }
         let companyData = findCompanyResult.payload;
+        companyData.Users = companyData.Users.map((user) => {
+            if (user.id === userData.payload.id) {
+                user.dataValues.isUser = true;
+            }
+            return user;
+        });
         res.status(200).send(companyData);
     })),
     put: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -47,4 +53,6 @@ module.exports = {
         }
         res.status(200).send('Company successfully updated');
     })),
+    member: require('./member'),
+    memberbyid: require('./memberbyid'),
 };

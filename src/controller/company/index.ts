@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 import { Request, Response } from 'express';
 const { userService, companyService } = require('../../services');
 
-import { Result, Decode, UserRecord, CompanyRecord } from '../../interfaces';
+import { Result, CompanyRecord, UserRecord } from '../../interfaces';
 
 module.exports = {
   get: asyncHandler(async (req: Request, res: Response) => {
@@ -18,6 +18,13 @@ module.exports = {
     }
 
     let companyData: any = findCompanyResult.payload;
+
+    companyData.Users = companyData.Users.map((user: any) => {
+      if (user.id === userData.payload.id) {
+        user.dataValues.isUser = true;
+      }
+      return user;
+    });
 
     res.status(200).send(companyData);
   }),
@@ -53,4 +60,6 @@ module.exports = {
 
     res.status(200).send('Company successfully updated');
   }),
+  member: require('./member'),
+  memberbyid: require('./memberbyid'),
 };
