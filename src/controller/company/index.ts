@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 import { Request, Response } from 'express';
 const { userService, companyService } = require('../../services');
 
-import { Result, CompanyRecord, UserRecord } from '../../interfaces';
+import { Result, CompanyRecord } from '../../interfaces';
 
 module.exports = {
   get: asyncHandler(async (req: Request, res: Response) => {
@@ -26,6 +26,14 @@ module.exports = {
       return user;
     });
 
+    const developerDatas = await companyService.findDeveloper(companyData.id);
+    if (!developerDatas.success) {
+      res.status(404).send(`There's an error while finding developers`);
+      return;
+    }
+
+    companyData.recommended_developers = developerDatas.payload;
+
     res.status(200).send(companyData);
   }),
 
@@ -35,6 +43,7 @@ module.exports = {
     const { token } = req.cookies;
 
     const userResult: Result = await userService.findByToken(token);
+    console.log(userResult);
     if (!userResult.success) {
       res.status(403).send('login required');
       return;
@@ -45,6 +54,7 @@ module.exports = {
     }
 
     const companyUpdateResult: Result = await companyService.update(companyUpdateData);
+
     if (!companyUpdateResult.success) {
       res.status(404).send(companyUpdateResult.message);
       return;
