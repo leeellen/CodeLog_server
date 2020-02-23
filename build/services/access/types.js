@@ -1,6 +1,6 @@
 "use strict";
 const { Types } = require('../../database/models');
-const handlePromise = require('../helper');
+const { handlePromise } = require('../helper');
 module.exports = {
     findByName: (name) => handlePromise(Types.findOne({
         where: {

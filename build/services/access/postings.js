@@ -1,5 +1,5 @@
 const { Postings, postings_tags, Tags, Contents, Subtitles, Types, } = require('../../database/models');
-const handlePromise = require('../helper');
+const { handlePromise } = require('../helper');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 Postings.hasMany(Contents, { foreignKey: 'post_id' });
@@ -38,6 +38,9 @@ module.exports = {
                 attributes: ['tag_id'],
                 include: {
                     model: Tags,
+                    where: {
+                        type: 'stack',
+                    },
                     attributes: ['name'],
                 },
             },
@@ -71,6 +74,9 @@ module.exports = {
                 attributes: ['tag_id'],
                 include: {
                     model: Tags,
+                    where: {
+                        type: 'stack',
+                    },
                     attributes: ['name'],
                 },
             },
@@ -101,6 +107,9 @@ module.exports = {
                 attributes: ['tag_id'],
                 include: {
                     model: Tags,
+                    where: {
+                        type: 'stack',
+                    },
                     attributes: ['name'],
                 },
             },
@@ -127,6 +136,9 @@ module.exports = {
                 attributes: ['tag_id'],
                 include: {
                     model: Tags,
+                    where: {
+                        type: 'stack',
+                    },
                     attributes: ['name'],
                 },
             },

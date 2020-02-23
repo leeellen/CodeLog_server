@@ -7,7 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { users, companies, postings, types, subtitles, contents } = require('./access');
+const { users, companies, tags } = require('./access');
+const { handleCompanyData } = require('./helper');
 const userService = require('./userService');
 const CompanyService = {
     signin: (company_code, emailOrUsername, password) => __awaiter(void 0, void 0, void 0, function* () {
@@ -43,7 +44,6 @@ const CompanyService = {
     }),
     signup: (companyData) => __awaiter(void 0, void 0, void 0, function* () {
         const companyCreate = yield companies.create(companyData);
-        console.log('company', companyCreate);
         if (!companyCreate) {
             return {
                 success: false,
@@ -99,12 +99,29 @@ const CompanyService = {
         }
         return {
             success: true,
-            payload: companyData,
+            payload: handleCompanyData(companyData),
             message: 'successfully found',
         };
     }),
-    update: (user_id, companyData) => __awaiter(void 0, void 0, void 0, function* () {
-        const updateRecord = yield companies.updateByEmail(companyData);
+    update: (companyData) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log(companyData);
+        const companyRecord = yield companies.find(companyData.id);
+        if (!companyRecord) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't find company",
+            };
+        }
+        if (companyRecord.company_code !== companyData.company_code ||
+            companyRecord.partner !== companyData.partner) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't update code or partner",
+            };
+        }
+        const updateRecord = yield companies.update(companyData);
         if (!updateRecord) {
             return {
                 success: false,
@@ -112,10 +129,41 @@ const CompanyService = {
                 message: "can't update company",
             };
         }
+        const deleteTags = yield tags.deleteByCompanyId(companyData.id);
+        return {
+            success: true,
+            payload: updateRecord,
+            message: 'successfully update company',
+        };
+    }),
+    addTags: (company_id, company_tags) => __awaiter(void 0, void 0, void 0, function* () {
+        let tagDatas = [];
+        for (let tag_name of company_tags) {
+            const findTag = yield tags.findByName(tag_name);
+            if (!findTag) {
+                return {
+                    success: false,
+                    payload: null,
+                    message: "can't find tag",
+                };
+            }
+            tagDatas.push({
+                company_id,
+                tag_id: findTag.id,
+            });
+        }
+        const addTag = yield tags.addCTTags(tagDatas);
+        if (!addTag) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't put tags in",
+            };
+        }
         return {
             success: true,
             payload: null,
-            message: 'successfully update company',
+            message: 'successfully taged',
         };
     }),
 };

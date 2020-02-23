@@ -3,13 +3,13 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     let demoArr = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 15; i++) {
       demoArr.push({
-        post_id: Math.floor(Math.random() * 99) + 1,
-        tag_id: Math.floor(Math.random() * 8) + 1,
+        company_id: Math.floor(Math.random() * 14) + 1,
+        tag_id: Math.floor(Math.random() * 6) + 9,
       });
     }
-    return queryInterface.bulkInsert('postings_tags', demoArr);
+    return queryInterface.bulkInsert('companies_tags', demoArr);
   },
 
   down: (queryInterface, Sequelize) => {

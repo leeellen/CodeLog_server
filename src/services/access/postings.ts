@@ -6,7 +6,7 @@ const {
   Subtitles,
   Types,
 } = require('../../database/models');
-const handlePromise = require('../helper');
+const { handlePromise } = require('../helper');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 import { PostingRecord } from '../../interfaces';
@@ -54,6 +54,9 @@ module.exports = {
             attributes: ['tag_id'],
             include: {
               model: Tags,
+              where: {
+                type: 'stack',
+              },
               attributes: ['name'],
             },
           },
@@ -90,6 +93,9 @@ module.exports = {
             attributes: ['tag_id'],
             include: {
               model: Tags,
+              where: {
+                type: 'stack',
+              },
               attributes: ['name'],
             },
           },
@@ -123,6 +129,9 @@ module.exports = {
             attributes: ['tag_id'],
             include: {
               model: Tags,
+              where: {
+                type: 'stack',
+              },
               attributes: ['name'],
             },
           },
@@ -152,6 +161,9 @@ module.exports = {
             attributes: ['tag_id'],
             include: {
               model: Tags,
+              where: {
+                type: 'stack',
+              },
               attributes: ['name'],
             },
           },

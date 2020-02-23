@@ -1,4 +1,5 @@
 const { users, companies, postings, types, subtitles, contents, tags } = require('./access');
+const { handlePostData, handlePostDatas, handleCompanyDatas } = require('./helper');
 
 import {
   PostingRecord,
@@ -10,31 +11,6 @@ import {
   PTRecord,
   TagRecord,
 } from '../interfaces';
-
-function handleData(postData: any) {
-  postData.theme = postData.Type.name;
-  delete postData.Type;
-
-  let cobj: any = {};
-  for (let content of postData.Contents) {
-    cobj[content.Subtitle.name] = content.body;
-  }
-  postData.content = cobj;
-  delete postData.Contents;
-
-  let tagArr: any = [];
-  for (let ptcon of postData.postings_tags) {
-    tagArr.push(ptcon.Tag.name);
-  }
-  postData.selected_tags = tagArr;
-  delete postData.postings_tags;
-
-  return postData;
-}
-
-function handleDatas(postDatas: any) {
-  return postDatas.map((postData: any) => handleData(postData));
-}
 
 const postingService: PostingServiceType = {
   create: async (postingData: PostingRecord) => {
@@ -109,7 +85,7 @@ const postingService: PostingServiceType = {
       };
     }
 
-    let postData = handleData(postRecord);
+    let postData = handlePostData(postRecord);
 
     const userData: UserRecord | null = await users.findById(postData.user_id);
     if (userData) {
@@ -138,7 +114,7 @@ const postingService: PostingServiceType = {
       };
     }
 
-    data.new_post = handleDatas(newPostDatas);
+    data.new_post = handlePostDatas(newPostDatas);
 
     let ManyLikePostDatas: Array<any> | null = await postings.findByManyLike(10);
     if (!ManyLikePostDatas) {
@@ -149,7 +125,7 @@ const postingService: PostingServiceType = {
       };
     }
 
-    data.recommended_post = handleDatas(ManyLikePostDatas);
+    data.recommended_post = handlePostDatas(ManyLikePostDatas);
 
     let newCompanies: Array<any> | null = await companies.findByNew(10);
     if (!newCompanies) {
@@ -159,8 +135,9 @@ const postingService: PostingServiceType = {
         message: "can't find companies",
       };
     }
+    console.log(newCompanies);
 
-    data.new_companies = newCompanies;
+    data.new_companies = handleCompanyDatas(newCompanies);
 
     return {
       success: true,
@@ -190,7 +167,7 @@ const postingService: PostingServiceType = {
         };
       }
 
-      blogPostDatas[typeData.name + '_posts'] = handleDatas(themePostDatas);
+      blogPostDatas[typeData.name + '_posts'] = handlePostDatas(themePostDatas);
     }
 
     return {
@@ -217,7 +194,7 @@ const postingService: PostingServiceType = {
       });
     }
 
-    const addTag = await tags.addAllTags(tagDatas);
+    const addTag = await tags.addPTTags(tagDatas);
     if (!addTag) {
       return {
         success: false,

@@ -38,6 +38,10 @@ router.post('/mypage/update', mypageController.put);
 
 router.get('/company', companyController.get);
 
+router.put('/company', companyController.put);
+
+router.post('/company/update', companyController.put);
+
 // * POST
 
 router.post('/post', postController.board.post);

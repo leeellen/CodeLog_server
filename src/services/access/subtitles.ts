@@ -1,5 +1,5 @@
 const { Subtitles } = require('../../database/models');
-const handlePromise = require('../helper');
+const { handlePromise } = require('../helper');
 
 module.exports = {
   findByTypeid: (type_id: string) =>

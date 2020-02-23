@@ -1,7 +1,16 @@
-const { Tags, postings_tags } = require('../../database/models');
-const handlePromise = require('../helper');
+const { Tags, postings_tags, companies_tags } = require('../../database/models');
+const { handlePromise } = require('../helper');
 module.exports = {
-    getAllTags: () => handlePromise(Tags.findAll()),
+    getPTTags: () => handlePromise(Tags.findAll({
+        where: {
+            type: 'stack',
+        },
+    })),
+    getCTTags: () => handlePromise(Tags.findAll({
+        where: {
+            type: 'company',
+        },
+    })),
     findByName: (tagname) => handlePromise(Tags.findOne({
         where: {
             name: tagname,
@@ -12,5 +21,11 @@ module.exports = {
             post_id,
         },
     })),
-    addAllTags: (tagDatas) => handlePromise(postings_tags.bulkCreate(tagDatas)),
+    deleteByCompanyId: (company_id) => handlePromise(companies_tags.destroy({
+        where: {
+            company_id,
+        },
+    })),
+    addPTTags: (tagDatas) => handlePromise(postings_tags.bulkCreate(tagDatas)),
+    addCTTags: (tagDatas) => handlePromise(companies_tags.bulkCreate(tagDatas)),
 };

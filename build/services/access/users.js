@@ -1,5 +1,5 @@
 const { Users } = require('../../database/models');
-const handlePromise = require('../helper');
+const { handlePromise } = require('../helper');
 module.exports = {
     create: (userData) => handlePromise(Users.findOrCreate({
         where: {
