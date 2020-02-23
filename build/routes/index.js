@@ -15,6 +15,8 @@ router.put('/mypage', mypageController.put);
 router.post('/mypage/update', mypageController.put);
 // * COMPANY
 router.get('/company', companyController.get);
+router.put('/company', companyController.put);
+router.post('/company/update', companyController.put);
 // * POST
 router.post('/post', postController.board.post);
 router.post('/test', postController.board.test);

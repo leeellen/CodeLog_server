@@ -1,5 +1,5 @@
 const { Contents, Subtitles } = require('../../database/models');
-const handlePromise = require('../helper');
+const { handlePromise } = require('../helper');
 Subtitles.hasMany(Contents, { foreignKey: 'subtitle_id' });
 Contents.belongsTo(Subtitles, { foreignKey: 'subtitle_id' });
 module.exports = {

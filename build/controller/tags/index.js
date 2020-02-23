@@ -11,7 +11,7 @@ const asyncHandler = require('express-async-handler');
 const { tags } = require('../../services/access');
 module.exports = {
     get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const getTagResult = yield tags.getAllTags();
+        const getTagResult = yield tags.getPTTags();
         if (!getTagResult) {
             res.status(404).send("There's an error while finding tags");
             return;

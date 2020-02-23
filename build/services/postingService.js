@@ -8,26 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const { users, companies, postings, types, subtitles, contents, tags } = require('./access');
-function handleData(postData) {
-    postData.theme = postData.Type.name;
-    delete postData.Type;
-    let cobj = {};
-    for (let content of postData.Contents) {
-        cobj[content.Subtitle.name] = content.body;
-    }
-    postData.content = cobj;
-    delete postData.Contents;
-    let tagArr = [];
-    for (let ptcon of postData.postings_tags) {
-        tagArr.push(ptcon.Tag.name);
-    }
-    postData.selected_tags = tagArr;
-    delete postData.postings_tags;
-    return postData;
-}
-function handleDatas(postDatas) {
-    return postDatas.map((postData) => handleData(postData));
-}
+const { handlePostData, handlePostDatas, handleCompanyDatas } = require('./helper');
 const postingService = {
     create: (postingData) => __awaiter(void 0, void 0, void 0, function* () {
         const typeData = yield types.findByName(postingData.theme);
@@ -87,7 +68,7 @@ const postingService = {
                 message: "can't find post",
             };
         }
-        let postData = handleData(postRecord);
+        let postData = handlePostData(postRecord);
         const userData = yield users.findById(postData.user_id);
         if (userData) {
             postData.user = {
@@ -113,7 +94,7 @@ const postingService = {
                 message: "can't find new posts",
             };
         }
-        data.new_post = handleDatas(newPostDatas);
+        data.new_post = handlePostDatas(newPostDatas);
         let ManyLikePostDatas = yield postings.findByManyLike(10);
         if (!ManyLikePostDatas) {
             return {
@@ -122,7 +103,7 @@ const postingService = {
                 message: "can't find recommended posts",
             };
         }
-        data.recommended_post = handleDatas(ManyLikePostDatas);
+        data.recommended_post = handlePostDatas(ManyLikePostDatas);
         let newCompanies = yield companies.findByNew(10);
         if (!newCompanies) {
             return {
@@ -131,7 +112,8 @@ const postingService = {
                 message: "can't find companies",
             };
         }
-        data.new_companies = newCompanies;
+        console.log(newCompanies);
+        data.new_companies = handleCompanyDatas(newCompanies);
         return {
             success: true,
             payload: data,
@@ -157,7 +139,7 @@ const postingService = {
                     message: "can't find post",
                 };
             }
-            blogPostDatas[typeData.name + '_posts'] = handleDatas(themePostDatas);
+            blogPostDatas[typeData.name + '_posts'] = handlePostDatas(themePostDatas);
         }
         return {
             success: true,
@@ -181,7 +163,7 @@ const postingService = {
                 tag_id: findTag.id,
             });
         }
-        const addTag = yield tags.addAllTags(tagDatas);
+        const addTag = yield tags.addPTTags(tagDatas);
         if (!addTag) {
             return {
                 success: false,
