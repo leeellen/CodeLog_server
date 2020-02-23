@@ -10,6 +10,7 @@ export interface Decode {
   userData: {
     email: string;
     password: string;
+    user_type: string;
   };
 }
 

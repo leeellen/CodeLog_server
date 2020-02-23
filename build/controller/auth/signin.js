@@ -26,6 +26,7 @@ module.exports = {
         const token = yield tokenGenerator({
             email: userData.payload.email,
             password: userData.payload.password,
+            user_type: 'developer',
         });
         let resBody = { message: 'Token generated' };
         if (userData.payload.company_id) {

@@ -22,6 +22,7 @@ module.exports = {
         const token = yield tokenGenerator({
             email: signinResult.payload.email,
             password: signinResult.payload.password,
+            user_type: 'company',
         });
         res
             .cookie('token', token)
