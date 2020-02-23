@@ -146,7 +146,7 @@ const postingService: PostingServiceType = {
     };
   },
 
-  findByUser: async (user_id: number) => {
+  findBlog: async (user_id: number) => {
     let blogPostDatas: any = {};
     const typeDatas: Array<TypeRecord> | null = await types.findAll();
     if (!typeDatas) {
@@ -173,6 +173,25 @@ const postingService: PostingServiceType = {
     return {
       success: true,
       payload: blogPostDatas,
+      message: 'all posts found',
+    };
+  },
+
+  findByUser: async (user_id: number) => {
+    let userPostDatas: Array<any> | null = await postings.findByUser(user_id);
+    console.log(userPostDatas);
+
+    if (!userPostDatas) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find post",
+      };
+    }
+
+    return {
+      success: true,
+      payload: userPostDatas,
       message: 'all posts found',
     };
   },

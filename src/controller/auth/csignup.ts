@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 const { companyService } = require('../../services');
 
 import { Request, Response } from 'express';
-import { companyMember, companySignUpBody, CompanyRecord } from '../../interfaces';
+import { CompanyRecord } from '../../interfaces';
 
 module.exports = {
   post: asyncHandler(async (req: Request, res: Response) => {
