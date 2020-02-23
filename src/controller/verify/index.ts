@@ -9,14 +9,20 @@ module.exports = {
   get: asyncHandler(async (req: Request, res: Response) => {
     const { token } = req.cookies;
 
-    let isLogin: Boolean = false;
+    let resBody: any = {
+      token: false,
+      join_type: 'developer',
+    };
 
     const userResult: Result = await userService.findByToken(token);
     if (userResult.success) {
-      isLogin = true;
+      resBody.token = true;
+    }
+    if (userResult.payload.company_id) {
+      resBody.join_type = 'company';
     }
 
-    res.status(200).send({ token: isLogin });
+    res.status(200).send(resBody);
   }),
   post: asyncHandler(async (req: Request, res: Response) => {
     const { token } = req.cookies;

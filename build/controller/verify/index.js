@@ -12,12 +12,18 @@ const { userService } = require('../../services');
 module.exports = {
     get: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { token } = req.cookies;
-        let isLogin = false;
+        let resBody = {
+            token: false,
+            join_type: 'developer',
+        };
         const userResult = yield userService.findByToken(token);
         if (userResult.success) {
-            isLogin = true;
+            resBody.token = true;
         }
-        res.status(200).send({ token: isLogin });
+        if (userResult.payload.company_id) {
+            resBody.join_type = 'company';
+        }
+        res.status(200).send(resBody);
     })),
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { token } = req.cookies;
