@@ -17,6 +17,9 @@ router.post('/mypage/update', mypageController.put);
 router.get('/company', companyController.get);
 router.put('/company', companyController.put);
 router.post('/company/update', companyController.put);
+router.post('/company/member/update', companyController.member.put);
+router.post('/company/member/delete', companyController.member.delete);
+router.post('/company/member/delete/:id', companyController.memberbyid.delete);
 // * POST
 router.post('/post', postController.board.post);
 router.post('/test', postController.board.test);

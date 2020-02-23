@@ -34,4 +34,14 @@ module.exports = {
             email: userData.email,
         },
     })),
+    updateById: (userData) => handlePromise(Users.update(userData, {
+        where: {
+            id: userData.id,
+        },
+    })),
+    delete: (user_id) => handlePromise(Users.destroy({
+        where: {
+            id: user_id,
+        },
+    })),
 };

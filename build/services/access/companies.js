@@ -16,7 +16,7 @@ module.exports = {
         include: [
             {
                 model: Users,
-                attributes: ['email', 'username', 'password', 'position'],
+                attributes: ['id', 'email', 'username', 'password', 'position'],
             },
             {
                 model: companies_tags,

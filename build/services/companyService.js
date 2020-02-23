@@ -104,7 +104,6 @@ const CompanyService = {
         };
     }),
     update: (companyData) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log(companyData);
         const companyRecord = yield companies.find(companyData.id);
         if (!companyRecord) {
             return {
@@ -113,13 +112,15 @@ const CompanyService = {
                 message: "can't find company",
             };
         }
-        if (companyRecord.company_code !== companyData.company_code ||
-            companyRecord.partner !== companyData.partner) {
-            return {
-                success: false,
-                payload: null,
-                message: "can't update code or partner",
-            };
+        const { company_code, partner } = companyData;
+        if (company_code || partner) {
+            if (companyRecord.company_code !== company_code || companyRecord.partner !== partner) {
+                return {
+                    success: false,
+                    payload: null,
+                    message: "can't update code or partner",
+                };
+            }
         }
         const updateRecord = yield companies.update(companyData);
         if (!updateRecord) {

@@ -120,7 +120,7 @@ const postingService = {
             message: 'success',
         };
     }),
-    findByUser: (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    findBlog: (user_id) => __awaiter(void 0, void 0, void 0, function* () {
         let blogPostDatas = {};
         const typeDatas = yield types.findAll();
         if (!typeDatas) {
@@ -144,6 +144,22 @@ const postingService = {
         return {
             success: true,
             payload: blogPostDatas,
+            message: 'all posts found',
+        };
+    }),
+    findByUser: (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+        let userPostDatas = yield postings.findByUser(user_id);
+        console.log(userPostDatas);
+        if (!userPostDatas) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't find post",
+            };
+        }
+        return {
+            success: true,
+            payload: userPostDatas,
             message: 'all posts found',
         };
     }),

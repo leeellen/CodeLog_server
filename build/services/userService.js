@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const users = require('./access/users');
 const { isValid } = require('../utils/token');
+const postingService = require('./postingService');
 const UserService = {
     signin: (emailOrUsername, password) => __awaiter(void 0, void 0, void 0, function* () {
         let userData;
@@ -74,6 +75,21 @@ const UserService = {
             message: 'successfully update user',
         };
     }),
+    updatebyId: (userRecord) => __awaiter(void 0, void 0, void 0, function* () {
+        const updateRecord = yield users.updateById(userRecord);
+        if (!updateRecord) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't update user",
+            };
+        }
+        return {
+            success: true,
+            payload: updateRecord,
+            message: 'successfully update user',
+        };
+    }),
     findByToken: (token) => __awaiter(void 0, void 0, void 0, function* () {
         const decode = yield isValid(token);
         if (!decode.isValid) {
@@ -118,6 +134,32 @@ const UserService = {
             success: false,
             payload: null,
             message: 'duplicated',
+        };
+    }),
+    delete: (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+        const userPostResult = yield postingService.findByUser(user_id);
+        if (!userPostResult.success) {
+            return {
+                success: false,
+                payload: null,
+                message: "can't find posts",
+            };
+        }
+        for (let userPost of userPostResult.payload) {
+            const deletePostResult = yield postingService.delete(userPost.id);
+            if (!deletePostResult.success) {
+                return {
+                    success: false,
+                    payload: null,
+                    message: "can't delete post",
+                };
+            }
+        }
+        const deleteResult = yield users.delete(user_id);
+        return {
+            success: true,
+            payload: null,
+            message: 'deleted',
         };
     }),
 };

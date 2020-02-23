@@ -18,7 +18,7 @@ module.exports = {
             return;
         }
         let userData = userResult.payload;
-        const postingResult = yield postingService.findByUser(userData.id);
+        const postingResult = yield postingService.findBlog(userData.id);
         if (!postingResult.success) {
             res.status(404).send(postingResult.message);
             return;
