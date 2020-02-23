@@ -7,4 +7,5 @@ module.exports = {
     contents: require('./contents'),
     types: require('./types'),
     tags: require('./tags'),
+    companies_tags: require('./companies_tags'),
 };
