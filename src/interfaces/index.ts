@@ -94,6 +94,7 @@ export interface CompanyRecord {
   eid: string;
   company_homepage: string;
   member?: UserRecord;
+  company_tags?: Array<string>;
 }
 
 export interface TILContent {
@@ -127,6 +128,11 @@ export interface TypeRecord {
 
 export interface PTRecord {
   post_id: number;
+  tag_id: number;
+}
+
+export interface CTRecord {
+  company_id: number;
   tag_id: number;
 }
 

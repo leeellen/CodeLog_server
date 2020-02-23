@@ -6,25 +6,35 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       company_id: {
-        type: Sequelize.NUMBER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Companies',
+          key: 'id',
+        },
       },
       tag_id: {
-        type: Sequelize.NUMBER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Tags',
+          key: 'id',
+        },
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+        defaultValue: new Date(),
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('companies_tags');
-  }
+  },
 };

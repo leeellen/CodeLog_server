@@ -1,4 +1,5 @@
-const { users, companies, postings, types, subtitles, contents } = require('./access');
+const { users, companies, tags } = require('./access');
+const { handleCompanyData } = require('./helper');
 const userService = require('./userService');
 
 import {
@@ -9,6 +10,8 @@ import {
   ContentRecord,
   UserRecord,
   Result,
+  CTRecord,
+  TagRecord,
 } from '../interfaces';
 
 const CompanyService: CompanyServiceType = {
@@ -50,7 +53,6 @@ const CompanyService: CompanyServiceType = {
   signup: async (companyData: CompanyRecord) => {
     const companyCreate: CompanyRecord | null = await companies.create(companyData);
 
-    console.log('company', companyCreate);
     if (!companyCreate) {
       return {
         success: false,
@@ -112,13 +114,34 @@ const CompanyService: CompanyServiceType = {
     }
     return {
       success: true,
-      payload: companyData,
+      payload: handleCompanyData(companyData),
       message: 'successfully found',
     };
   },
 
-  update: async (user_id: number, companyData: CompanyRecord) => {
-    const updateRecord: CompanyRecord | null = await companies.updateByEmail(companyData);
+  update: async (companyData: CompanyRecord) => {
+    console.log(companyData);
+    const companyRecord: CompanyRecord | null = await companies.find(companyData.id);
+    if (!companyRecord) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't find company",
+      };
+    }
+
+    if (
+      companyRecord.company_code !== companyData.company_code ||
+      companyRecord.partner !== companyData.partner
+    ) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't update code or partner",
+      };
+    }
+
+    const updateRecord: CompanyRecord | null = await companies.update(companyData);
     if (!updateRecord) {
       return {
         success: false,
@@ -127,10 +150,44 @@ const CompanyService: CompanyServiceType = {
       };
     }
 
+    const deleteTags: undefined = await tags.deleteByCompanyId(companyData.id);
+
+    return {
+      success: true,
+      payload: updateRecord,
+      message: 'successfully update company',
+    };
+  },
+
+  addTags: async (company_id: number, company_tags: Array<String>) => {
+    let tagDatas: Array<CTRecord> = [];
+    for (let tag_name of company_tags) {
+      const findTag: TagRecord | null = await tags.findByName(tag_name);
+      if (!findTag) {
+        return {
+          success: false,
+          payload: null,
+          message: "can't find tag",
+        };
+      }
+      tagDatas.push({
+        company_id,
+        tag_id: findTag.id,
+      });
+    }
+
+    const addTag = await tags.addCTTags(tagDatas);
+    if (!addTag) {
+      return {
+        success: false,
+        payload: null,
+        message: "can't put tags in",
+      };
+    }
     return {
       success: true,
       payload: null,
-      message: 'successfully update company',
+      message: 'successfully taged',
     };
   },
 };
