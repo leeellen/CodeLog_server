@@ -82,4 +82,19 @@ module.exports = {
             return companyData;
         });
     },
+    handleTagDatas: (Tags) => {
+        let obj = {};
+        Tags.map((tag) => {
+            tag.Tag.dataValues.postings_tags.map((post) => {
+                if (post.Posting.user_id in obj) {
+                    obj[post.Posting.user_id]++;
+                }
+                else {
+                    obj[post.Posting.user_id] = 1;
+                }
+            });
+        });
+        console.log(obj);
+        return Object.entries(obj).sort((a, b) => b[1] - a[1]);
+    },
 };

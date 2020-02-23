@@ -25,6 +25,12 @@ module.exports = {
             }
             return user;
         });
+        const developerDatas = yield companyService.findDeveloper(companyData.id);
+        if (!developerDatas.success) {
+            res.status(404).send(`There's an error while finding developers`);
+            return;
+        }
+        companyData.recommended_developers = developerDatas.payload;
         res.status(200).send(companyData);
     })),
     put: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -32,6 +38,7 @@ module.exports = {
         const { company_tags } = companyUpdateData;
         const { token } = req.cookies;
         const userResult = yield userService.findByToken(token);
+        console.log(userResult);
         if (!userResult.success) {
             res.status(403).send('login required');
             return;

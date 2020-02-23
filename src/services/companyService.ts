@@ -1,13 +1,10 @@
-const { users, companies, tags } = require('./access');
-const { handleCompanyData } = require('./helper');
+const { companies_tags, users, companies, tags } = require('./access');
+const { handleCompanyData, handleTagDatas } = require('./helper');
 const userService = require('./userService');
 
 import {
   CompanyRecord,
   CompanyServiceType,
-  TypeRecord,
-  SubtitleRecord,
-  ContentRecord,
   UserRecord,
   Result,
   CTRecord,
@@ -188,6 +185,24 @@ const CompanyService: CompanyServiceType = {
       success: true,
       payload: null,
       message: 'successfully taged',
+    };
+  },
+  findDeveloper: async (company_id: number) => {
+    let userids = await companies_tags.findDeveloper(company_id);
+    console.log(handleTagDatas(userids));
+
+    let userDatas: Array<UserRecord> = [];
+
+    for (let id of handleTagDatas(userids)) {
+      const userData = await users.findById(id[0]);
+      userDatas.push(userData);
+    }
+    console.log(userDatas);
+
+    return {
+      success: true,
+      payload: userDatas,
+      message: 'successfully found',
     };
   },
 };

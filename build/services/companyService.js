@@ -7,8 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { users, companies, tags } = require('./access');
-const { handleCompanyData } = require('./helper');
+const { companies_tags, users, companies, tags } = require('./access');
+const { handleCompanyData, handleTagDatas } = require('./helper');
 const userService = require('./userService');
 const CompanyService = {
     signin: (company_code, emailOrUsername, password) => __awaiter(void 0, void 0, void 0, function* () {
@@ -165,6 +165,21 @@ const CompanyService = {
             success: true,
             payload: null,
             message: 'successfully taged',
+        };
+    }),
+    findDeveloper: (company_id) => __awaiter(void 0, void 0, void 0, function* () {
+        let userids = yield companies_tags.findDeveloper(company_id);
+        console.log(handleTagDatas(userids));
+        let userDatas = [];
+        for (let id of handleTagDatas(userids)) {
+            const userData = yield users.findById(id[0]);
+            userDatas.push(userData);
+        }
+        console.log(userDatas);
+        return {
+            success: true,
+            payload: userDatas,
+            message: 'successfully found',
         };
     }),
 };
