@@ -8,7 +8,7 @@ var os = require('os');
 const morgan = require('morgan');
 const router = require('./routes');
 const app = express();
-const port = 3001;
+const port = 8000;
 app.use(
   session({
     secret: '@warrmansion',
