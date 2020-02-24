@@ -38,7 +38,6 @@ module.exports = {
         const { company_tags } = companyUpdateData;
         const { token } = req.cookies;
         const userResult = yield userService.findByToken(token);
-        console.log(userResult);
         if (!userResult.success) {
             res.status(403).send('login required');
             return;

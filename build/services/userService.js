@@ -39,7 +39,6 @@ const UserService = {
     }),
     signup: (userData) => __awaiter(void 0, void 0, void 0, function* () {
         const userCreate = yield users.create(userData);
-        console.log(userCreate);
         if (userCreate === 'duplicated') {
             return {
                 success: false,

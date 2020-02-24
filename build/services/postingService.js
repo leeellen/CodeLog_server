@@ -32,7 +32,6 @@ const postingService = {
         const subtDatas = yield subtitles.findByTypeid(typeData.id);
         for (let subtitle of subtDatas) {
             const { name, id } = subtitle;
-            console.log(1000, subtitle, id);
             const content = postingData.content[name];
             const contentCreate = yield contents.create(post_id, id, content);
             if (!contentCreate) {
@@ -58,9 +57,7 @@ const postingService = {
         };
     }),
     find: (post_id) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('before find');
         let postRecord = yield postings.findById(post_id);
-        console.log(postRecord);
         if (!postRecord) {
             return {
                 success: false,
@@ -112,7 +109,6 @@ const postingService = {
                 message: "can't find companies",
             };
         }
-        console.log(newCompanies);
         data.new_companies = handleCompanyDatas(newCompanies);
         return {
             success: true,
@@ -149,7 +145,6 @@ const postingService = {
     }),
     findByUser: (user_id) => __awaiter(void 0, void 0, void 0, function* () {
         let userPostDatas = yield postings.findByUser(user_id);
-        console.log(userPostDatas);
         if (!userPostDatas) {
             return {
                 success: false,

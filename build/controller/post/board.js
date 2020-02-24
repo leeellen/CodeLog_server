@@ -25,7 +25,7 @@ module.exports = {
             res.status(404).send(postResult.message);
             return;
         }
-        const { id, theme } = postResult.payload;
+        const { id } = postResult.payload;
         const tagResult = yield postingService.addTags(id, selected_tags);
         if (!tagResult.success) {
             res.status(201).send({
@@ -95,7 +95,6 @@ module.exports = {
             return;
         }
         if (postingInfo.payload.user_id !== user_id) {
-            console.log(postingInfo.payload);
             res.status(403).send('It is not your posting');
             return;
         }

@@ -169,13 +169,11 @@ const CompanyService = {
     }),
     findDeveloper: (company_id) => __awaiter(void 0, void 0, void 0, function* () {
         let userids = yield companies_tags.findDeveloper(company_id);
-        console.log(handleTagDatas(userids));
         let userDatas = [];
         for (let id of handleTagDatas(userids)) {
             const userData = yield users.findById(id[0]);
             userDatas.push(userData);
         }
-        console.log(userDatas);
         return {
             success: true,
             payload: userDatas,
