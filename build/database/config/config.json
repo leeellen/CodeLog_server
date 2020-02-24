@@ -1,9 +1,10 @@
 {
   "development": {
     "username": "root",
-    "password": null,
+    "password": "applepie",
     "database": "codelog",
-    "host": "127.0.0.1",
+    "host": "codelog-database-build.cibnhzur2wz1.ap-northeast-2.rds.amazonaws.com",
+    "port": 3306,
     "dialect": "mysql",
     "operatorsAliases": false
   },
