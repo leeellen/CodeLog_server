@@ -41,7 +41,6 @@ const postingService: PostingServiceType = {
 
     for (let subtitle of subtDatas) {
       const { name, id } = subtitle;
-      console.log(1000, subtitle, id);
       const content: string = postingData.content[name];
 
       const contentCreate: ContentRecord | null = await contents.create(post_id, id, content);
@@ -73,9 +72,7 @@ const postingService: PostingServiceType = {
   },
 
   find: async (post_id: number) => {
-    console.log('before find');
     let postRecord: PostingRecord | null = await postings.findById(post_id);
-    console.log(postRecord);
 
     if (!postRecord) {
       return {
@@ -135,7 +132,6 @@ const postingService: PostingServiceType = {
         message: "can't find companies",
       };
     }
-    console.log(newCompanies);
 
     data.new_companies = handleCompanyDatas(newCompanies);
 
@@ -148,6 +144,7 @@ const postingService: PostingServiceType = {
 
   findBlog: async (user_id: number) => {
     let blogPostDatas: any = {};
+
     const typeDatas: Array<TypeRecord> | null = await types.findAll();
     if (!typeDatas) {
       return {
@@ -156,6 +153,7 @@ const postingService: PostingServiceType = {
         message: "can't find types",
       };
     }
+
     for (let typeData of typeDatas) {
       let themePostDatas: Array<any> | null = await postings.findByUserTheme(user_id, typeData.id);
 
@@ -179,7 +177,6 @@ const postingService: PostingServiceType = {
 
   findByUser: async (user_id: number) => {
     let userPostDatas: Array<any> | null = await postings.findByUser(user_id);
-    console.log(userPostDatas);
 
     if (!userPostDatas) {
       return {

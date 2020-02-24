@@ -23,7 +23,7 @@ module.exports = {
       res.status(404).send(postResult.message);
       return;
     }
-    const { id, theme } = postResult.payload;
+    const { id } = postResult.payload;
 
     const tagResult: Result = await postingService.addTags(id, selected_tags);
     if (!tagResult.success) {
@@ -32,6 +32,7 @@ module.exports = {
         message: `it successfully created but can't put tags in"}`,
       });
     }
+
     res.status(201).send({
       post_id: id,
       message: `it successfully created!`,
@@ -106,7 +107,6 @@ module.exports = {
     }
 
     if (postingInfo.payload.user_id !== user_id) {
-      console.log(postingInfo.payload);
       res.status(403).send('It is not your posting');
       return;
     }
