@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+var os = require('os');
 const morgan = require('morgan');
 const router = require('./routes');
 const app = express();
@@ -29,6 +30,6 @@ app.use(morgan('dev'));
 app.use('/', router);
 app.set('port', port);
 app.listen(app.get('port'), () => {
-  console.log(`app is listening in HOST${app.get('host')} PORT ${app.get('port')}`);
+  console.log(`app is listening in HOST ${os.hostname()} PORT ${app.get('port')}`);
 });
 module.exports = app;
