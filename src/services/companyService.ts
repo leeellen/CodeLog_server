@@ -189,7 +189,6 @@ const CompanyService: CompanyServiceType = {
   },
   findDeveloper: async (company_id: number) => {
     let userids = await companies_tags.findDeveloper(company_id);
-    console.log(handleTagDatas(userids));
 
     let userDatas: Array<UserRecord> = [];
 
@@ -197,7 +196,6 @@ const CompanyService: CompanyServiceType = {
       const userData = await users.findById(id[0]);
       userDatas.push(userData);
     }
-    console.log(userDatas);
 
     return {
       success: true,

@@ -15,7 +15,6 @@ module.exports = {
       return data;
     } catch (err) {
       console.log(err);
-
       return null;
     }
   },
@@ -99,7 +98,6 @@ module.exports = {
         }
       });
     });
-    console.log(obj);
     return Object.entries(obj).sort((a, b) => b[1] - a[1]);
   },
 };

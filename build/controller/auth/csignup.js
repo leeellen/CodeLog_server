@@ -12,13 +12,12 @@ const { companyService } = require('../../services');
 module.exports = {
     post: asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const companyData = req.body;
-        let result = yield companyService.signup(companyData);
-        if (!result.success) {
-            res.status(409).send(result.message);
+        const SigninResult = yield companyService.signup(companyData);
+        if (!SigninResult.success) {
+            res.status(409).send(SigninResult.message);
             return;
         }
-        console.log(result.payload);
-        const company_id = result.payload.id;
+        const company_id = SigninResult.payload.id;
         res.status(200).send({
             company_id,
             message: 'Company successfully created!',

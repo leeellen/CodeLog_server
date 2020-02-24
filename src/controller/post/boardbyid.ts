@@ -39,7 +39,6 @@ module.exports = {
       return;
     }
     const user_id = userResult.payload.id;
-    console.log(user_id);
 
     const postingInfo: Result = await postingService.find(id);
     if (!postingInfo.success) {
@@ -48,7 +47,6 @@ module.exports = {
     }
 
     if (postingInfo.payload.user_id !== user_id) {
-      console.log(postingInfo.payload);
       res.status(403).send('It is not your posting');
       return;
     }

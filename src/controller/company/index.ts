@@ -43,11 +43,12 @@ module.exports = {
     const { token } = req.cookies;
 
     const userResult: Result = await userService.findByToken(token);
-    console.log(userResult);
+
     if (!userResult.success) {
       res.status(403).send('login required');
       return;
     }
+
     if (userResult.payload.company_id !== companyUpdateData.id) {
       res.status(403).send("you're not company user");
       return;
