@@ -10,7 +10,7 @@ const morgan = require('morgan');
 const router = require('./routes');
 
 const app = express();
-const port = 3001;
+const port = 8000;
 
 app.use(
   session({
@@ -25,8 +25,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: ['http://localhost:3000'],
-    methods: ['GET', 'POST'],
+    origin: ['http://code-log.s3-website.ap-northeast-2.amazonaws.com'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   }),
 );
