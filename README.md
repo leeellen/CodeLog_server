@@ -8,14 +8,6 @@
 ## What is Code Log ?  
 **Code Log 는 개발자와 코드 스테이츠 파트너 사를 연결시키는 블로그 플랫폼 입니다.**
 
-## Setup
-To run this project, install it locally using npm:
-
-```
-$ npm install
-$ npm start
-```
-
 ## Contents
 
 ### For developer
